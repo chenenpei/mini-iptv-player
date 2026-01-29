@@ -156,36 +156,40 @@ mini-iptv-player/
 ```json
 {
   "dependencies": {
-    "expo": "~55.0.0",
-    "expo-router": "~4.1.0",
+    "expo": "55.0.0-preview.7",
+    "expo-router": "55.0.0-canary-*",
     "react": "19.2.0",
     "react-native": "0.83.1",
 
-    "zustand": "^5.0.0",
-    "react-native-mmkv": "^3.2.0",
-    "@tanstack/react-query": "^5.62.0",
+    "zustand": "^5.0.10",
+    "react-native-mmkv": "^4.1.2",
+    "@tanstack/react-query": "^5.90.0",
 
-    "nativewind": "^4.2.0",
-    "tailwindcss": "^3.4.17",
+    "nativewind": "^4.2.1",
+    "tailwindcss": "~3.4.19",
 
-    "react-native-reanimated": "^3.17.0",
+    "react-native-reanimated": "~4.2.1",
     "react-native-gesture-handler": "^2.22.0",
 
-    "lucide-react-native": "^0.475.0",
-    "react-native-svg": "^15.11.0",
+    "lucide-react-native": "^0.563.0",
+    "react-native-svg": "^15.15.0",
 
     "react-native-video": "^6.10.0",
     "react-native-google-cast": "^4.8.0",
 
-    "i18next": "^24.2.0",
-    "react-i18next": "^15.2.0",
+    "i18next": "^25.8.0",
+    "react-i18next": "^16.5.0",
 
     "iptv-playlist-parser": "^0.15.0"
   }
 }
 ```
 
-> **注意**：Expo SDK 55 目前处于 beta 阶段，预计 2026 年 2 月初发布稳定版。版本号可能会有小幅调整。
+> **注意**：Expo SDK 55 目前处于 preview 阶段，expo-router 使用 canary 版本。预计 2026 年 2 月初发布稳定版。
+>
+> **react-native-mmkv v4 API 变化**：
+> - 创建实例使用 `createMMKV()` 而非 `new MMKV()`
+> - 删除方法使用 `remove()` 而非 `delete()`
 
 ### 3.2 开发依赖
 
@@ -427,7 +431,7 @@ eas build --profile production --platform all
 
 ## 7. 代码规范
 
-### 6.1 Biome 配置
+### 7.1 Biome 配置
 
 ```json
 // biome.json
@@ -439,20 +443,30 @@ eas build --profile production --platform all
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn"
+      }
     }
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 100
+    "lineWidth": 80
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "single",
-      "semicolons": "asNeeded"
+      "quoteStyle": "double",
+      "semicolons": "always",
+      "trailingCommas": "es5"
     }
+  },
+  "files": {
+    "ignore": ["node_modules", ".expo", "ios", "android", "dist", "build", "*.d.ts"]
   }
 }
 ```

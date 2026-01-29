@@ -1,4 +1,4 @@
-import { cn } from "@/lib/cn";
+import { cn } from "@utils/cn";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Pressable } from "react-native";

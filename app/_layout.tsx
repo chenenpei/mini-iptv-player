@@ -1,8 +1,8 @@
 import "../global.css";
-import "@/lib/i18n";
+import "@i18n/index";
 
-import { NAV_THEME } from "@/lib/constants";
-import { queryClient } from "@/lib/queryClient";
+import { NAV_THEME } from "@utils/constants";
+import { queryClient } from "@services/queryClient";
 import {
   DarkTheme,
   DefaultTheme,

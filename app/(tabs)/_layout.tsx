@@ -1,9 +1,8 @@
-import { Home, Heart, History, Settings } from "@/lib/icons";
+import { Home, Heart, History, Settings } from "@utils/icons";
+import { NAV_THEME } from "@utils/constants";
 import { Tabs } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "react-native";
-
-import { NAV_THEME } from "@/lib/constants";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();

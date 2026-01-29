@@ -77,3 +77,33 @@ pnpm test
 ## Architecture
 
 详见 [Tech-Stack.md](doc/Tech-Stack.md) 中的项目架构章节。
+
+## Development Notes
+
+### Expo SDK 55
+
+- 目前使用 preview 版本 (`55.0.0-preview.7`)，expo-router 使用 canary 版本
+- 部分 peer dependency 警告是正常的，SDK 55 正式版发布后会解决
+- New Architecture 默认启用且不可禁用
+
+### react-native-mmkv v4
+
+API 已从 v3 变化：
+
+```typescript
+// v3 (旧)
+import { MMKV } from "react-native-mmkv";
+const storage = new MMKV();
+storage.delete(key);
+
+// v4 (新)
+import { createMMKV } from "react-native-mmkv";
+const storage = createMMKV({ id: "app-storage" });
+storage.remove(key);
+```
+
+### react-native-reusables
+
+- CLI 的 `init` 命令是交互式的，已存在项目需手动配置
+- 组件复制到 `src/components/ui/` 目录
+- 使用 `npx @react-native-reusables/cli@latest add <component>` 添加组件
