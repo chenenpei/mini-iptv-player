@@ -1,0 +1,55 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "出错了",
+    "retry": "重试",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "search": "搜索"
+  },
+  "tabs": {
+    "home": "首页",
+    "favorites": "收藏",
+    "history": "历史",
+    "settings": "设置"
+  },
+  "home": {
+    "title": "频道列表",
+    "empty": "暂无频道，请添加 IPTV 源",
+    "searchPlaceholder": "搜索频道"
+  },
+  "favorites": {
+    "title": "收藏",
+    "empty": "暂无收藏"
+  },
+  "history": {
+    "title": "历史",
+    "empty": "暂无播放记录"
+  },
+  "settings": {
+    "title": "设置",
+    "sources": "IPTV 源管理",
+    "theme": "主题",
+    "themeSystem": "跟随系统",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "language": "语言",
+    "about": "关于"
+  },
+  "sources": {
+    "title": "IPTV 源管理",
+    "add": "添加源",
+    "edit": "编辑源",
+    "name": "名称",
+    "url": "URL",
+    "deleteConfirm": "确定要删除这个源吗？"
+  },
+  "player": {
+    "loading": "加载中...",
+    "error": "播放失败"
+  }
+}

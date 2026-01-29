@@ -1,0 +1,55 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search"
+  },
+  "tabs": {
+    "home": "Home",
+    "favorites": "Favorites",
+    "history": "History",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Channels",
+    "empty": "No channels. Please add an IPTV source.",
+    "searchPlaceholder": "Search channels"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "empty": "No favorites yet"
+  },
+  "history": {
+    "title": "History",
+    "empty": "No watch history"
+  },
+  "settings": {
+    "title": "Settings",
+    "sources": "IPTV Sources",
+    "theme": "Theme",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "language": "Language",
+    "about": "About"
+  },
+  "sources": {
+    "title": "IPTV Sources",
+    "add": "Add Source",
+    "edit": "Edit Source",
+    "name": "Name",
+    "url": "URL",
+    "deleteConfirm": "Are you sure you want to delete this source?"
+  },
+  "player": {
+    "loading": "Loading...",
+    "error": "Playback failed"
+  }
+}
