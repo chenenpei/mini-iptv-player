@@ -1,0 +1,79 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+mini-iptv-player - 一个轻量级的跨平台 IPTV 播放器应用，支持 iOS 和 Android。
+
+## Documentation
+
+项目文档位于 `doc/` 目录：
+
+| 文档 | 说明 | 用途 |
+|------|------|------|
+| [PRD.md](doc/PRD.md) | 产品需求文档 | 功能需求、用户故事、页面状态定义 |
+| [UI-UX-Design.md](doc/UI-UX-Design.md) | UI/UX 设计文档 | 视觉规范、组件设计、页面布局、5 种页面状态 |
+| [Tech-Stack.md](doc/Tech-Stack.md) | 技术栈文档 | 依赖版本、目录结构、代码规范 |
+| [MILESTONE.md](doc/MILESTONE.md) | 开发里程碑 | 开发进度、任务清单、变更日志 |
+
+## Development Workflow
+
+开发流程遵循以下原则：
+
+1. **开发前**：查阅相关文档（PRD 了解需求、UI-UX 了解设计、Tech-Stack 了解规范）
+2. **开发中**：遵循 Tech-Stack.md 中的代码规范和目录结构
+3. **阶段完成后**：
+   - 更新 MILESTONE.md 中的任务状态和变更日志
+   - 总结开发要点，检查是否需要更新其他文档
+   - 如发现文档与实际实现有差异，及时同步更新
+
+## Git Commit 规范
+
+| 场景 | 何时提交 | 说明 |
+|------|----------|------|
+| **常规开发** | 完成一个任务即可提交 | 记录进度、方便回滚 |
+| **Milestone 完成** | 提交后等待用户测试审核 | 通过后才进入下一阶段 |
+| **修 Bug** | 用户验证通过后才提交 | commit 代表交付确认 |
+
+**重要**：修 Bug 时，完成修改后**不要**主动提交 commit，需等待用户验证通过后再提交。
+
+## Tech Stack
+
+- **Framework**: React Native 0.83 + Expo SDK 55
+- **Routing**: Expo Router
+- **Language**: TypeScript
+- **State**: Zustand + MMKV
+- **Styling**: NativeWind (Tailwind CSS)
+- **UI Components**: react-native-reusables (shadcn/ui for RN)
+- **Icons**: lucide-react-native
+- **Animation**: Reanimated + Gesture Handler
+- **Video**: react-native-video
+- **i18n**: i18next
+
+## Development
+
+```bash
+# 安装依赖
+pnpm install
+
+# 启动开发服务器
+pnpm start
+
+# iOS 开发
+pnpm ios
+
+# Android 开发
+pnpm android
+
+# 代码检查与格式化
+pnpm lint
+pnpm format
+
+# 运行测试
+pnpm test
+```
+
+## Architecture
+
+详见 [Tech-Stack.md](doc/Tech-Stack.md) 中的项目架构章节。
