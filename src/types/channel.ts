@@ -1,0 +1,16 @@
+export type ChannelStatus = "unknown" | "available" | "unavailable";
+
+export interface Channel {
+  id: string;
+  name: string;
+  url: string;
+  logo?: string;
+  group: string;
+  tvgId?: string;
+  tvgName?: string;
+}
+
+export interface ChannelGroup {
+  name: string;
+  channels: Channel[];
+}
