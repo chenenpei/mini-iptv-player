@@ -1,6 +1,9 @@
 import type { ChannelStatus } from "@/types/channel";
 import { create } from "zustand";
 
+export type SortBy = "name" | "status";
+export type LayoutMode = "list" | "grid";
+
 interface ChannelState {
   // Status tracking
   statusMap: Record<string, ChannelStatus>;
@@ -10,6 +13,14 @@ interface ChannelState {
   // Search
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+
+  // Sort
+  sortBy: SortBy;
+  setSortBy: (sortBy: SortBy) => void;
+
+  // Layout
+  layoutMode: LayoutMode;
+  setLayoutMode: (mode: LayoutMode) => void;
 
   // Collapsed groups
   collapsedGroups: Set<string>;
@@ -32,6 +43,14 @@ export const useChannelStore = create<ChannelState>((set, get) => ({
   // Search
   searchQuery: "",
   setSearchQuery: (query) => set({ searchQuery: query }),
+
+  // Sort
+  sortBy: "name",
+  setSortBy: (sortBy) => set({ sortBy }),
+
+  // Layout
+  layoutMode: "list",
+  setLayoutMode: (mode) => set({ layoutMode: mode }),
 
   // Collapsed groups
   collapsedGroups: new Set<string>(),
