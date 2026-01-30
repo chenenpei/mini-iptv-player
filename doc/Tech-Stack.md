@@ -178,11 +178,11 @@ mini-iptv-player/
     "react-native-google-cast": "^4.8.0",
 
     "i18next": "^25.8.0",
-    "react-i18next": "^16.5.0",
-
-    "iptv-playlist-parser": "^0.15.0"
+    "react-i18next": "^16.5.0"
   }
 }
+
+> **注意**：M3U 解析器采用手动实现（`src/services/m3uParser.ts`），不依赖第三方库，以获得更好的控制和更小的包体积。
 ```
 
 > **注意**：Expo SDK 55 目前处于 preview 阶段，expo-router 使用 canary 版本。预计 2026 年 2 月初发布稳定版。
