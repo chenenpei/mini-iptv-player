@@ -180,6 +180,19 @@
 
 ### 2026-01-30
 
+- **M1 频道管理（进行中）**
+  - 创建类型定义：Channel、ChannelGroup、ChannelStatus、Source
+  - 实现 M3U 解析器（手动实现，无第三方依赖）
+  - 创建 useSourceStore（MMKV 持久化，含默认中国频道源）
+  - 实现 channelService（数据获取、分组、过滤、排序）
+  - 创建 useChannels hook（React Query 缓存）
+  - 创建 useChannelStore（搜索状态、分组折叠状态）
+  - 创建 useChannelStatus hook（懒加载状态检测）
+  - 实现频道组件：StatusIndicator、ChannelItem、ChannelGroup、SearchBar、ChannelList
+  - 更新首页展示频道列表
+  - 添加频道相关 i18n 翻译
+  - 待完成：排序功能、布局切换（列表/网格）
+
 - **Android 开发环境配置**
   - 配置 Android SDK 和 Java 环境变量
   - 修复 Gradle 版本兼容性问题（9.0.0 → 8.13）
