@@ -29,7 +29,10 @@
     "error": "Failed to Load",
     "errorHint": "Unable to fetch channel list",
     "noResults": "No Results",
-    "noResultsHint": "Try searching with different keywords"
+    "noResultsHint": "Try searching with different keywords",
+    "sortLabel": "Sort:",
+    "sortByName": "Name",
+    "sortByStatus": "Status"
   },
   "favorites": {
     "title": "Favorites",

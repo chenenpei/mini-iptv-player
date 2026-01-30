@@ -1,8 +1,11 @@
 import { View, ScrollView, ActivityIndicator, Pressable } from "react-native";
 import { Text } from "@components/ui/text";
 import { ChannelGroup } from "./ChannelGroup";
+import { ChannelGrid } from "./ChannelGrid";
 import { SearchBar } from "./SearchBar";
+import { Toolbar } from "./Toolbar";
 import { useChannels } from "@hooks/useChannels";
+import { useChannelStore } from "@stores/useChannelStore";
 import { useTranslation } from "react-i18next";
 import { Tv, AlertTriangle, RefreshCw, Search } from "@utils/icons";
 import type { Channel } from "@/types/channel";
@@ -93,6 +96,7 @@ function NoResultsState() {
 
 export function ChannelList({ onChannelPress }: ChannelListProps) {
   const router = useRouter();
+  const layoutMode = useChannelStore((state) => state.layoutMode);
   const {
     groupedChannels,
     channels,
@@ -116,6 +120,7 @@ export function ChannelList({ onChannelPress }: ChannelListProps) {
     return (
       <View className="flex-1 bg-background">
         <SearchBar />
+        <Toolbar />
         <LoadingState />
       </View>
     );
@@ -126,6 +131,7 @@ export function ChannelList({ onChannelPress }: ChannelListProps) {
     return (
       <View className="flex-1 bg-background">
         <SearchBar />
+        <Toolbar />
         <ErrorState onRetry={() => refetch()} />
       </View>
     );
@@ -136,6 +142,7 @@ export function ChannelList({ onChannelPress }: ChannelListProps) {
     return (
       <View className="flex-1 bg-background">
         <SearchBar />
+        <Toolbar />
         <EmptyState />
       </View>
     );
@@ -146,6 +153,7 @@ export function ChannelList({ onChannelPress }: ChannelListProps) {
     return (
       <View className="flex-1 bg-background">
         <SearchBar />
+        <Toolbar />
         <NoResultsState />
       </View>
     );
@@ -155,15 +163,20 @@ export function ChannelList({ onChannelPress }: ChannelListProps) {
   return (
     <View className="flex-1 bg-background">
       <SearchBar />
-      <ScrollView className="flex-1">
-        {groupedChannels.map((group) => (
-          <ChannelGroup
-            key={group.name}
-            group={group}
-            onChannelPress={handleChannelPress}
-          />
-        ))}
-      </ScrollView>
+      <Toolbar />
+      {layoutMode === "grid" ? (
+        <ChannelGrid channels={channels} onChannelPress={handleChannelPress} />
+      ) : (
+        <ScrollView className="flex-1">
+          {groupedChannels.map((group) => (
+            <ChannelGroup
+              key={group.name}
+              group={group}
+              onChannelPress={handleChannelPress}
+            />
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 }
