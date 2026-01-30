@@ -107,3 +107,26 @@ storage.remove(key);
 - CLI 的 `init` 命令是交互式的，已存在项目需手动配置
 - 组件复制到 `src/components/ui/` 目录
 - 使用 `npx @react-native-reusables/cli@latest add <component>` 添加组件
+
+### Android 开发环境
+
+Expo SDK 55 preview 自动生成的 `android/` 目录使用 Gradle 9.0.0，但 AGP 要求 Gradle 8.13。如果构建失败，需手动修改：
+
+```properties
+# android/gradle/wrapper/gradle-wrapper.properties
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
+```
+
+### pnpm Hoisting 问题
+
+pnpm 可能不会将 `react-native-css-interop` 提升到顶层 `node_modules`，导致 Metro 无法解析模块。如遇到以下错误：
+
+```
+Unable to resolve "react-native-css-interop/jsx-runtime"
+```
+
+需显式安装：
+
+```bash
+pnpm add react-native-css-interop
+```

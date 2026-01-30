@@ -350,9 +350,26 @@ pnpm format
 pnpm test
 ```
 
-### 5.3 环境变量
+### 5.3 Android SDK 配置
 
-本项目为纯本地应用，不需要环境变量配置。
+在 `~/.zshrc`（或 `~/.bashrc`）中添加以下环境变量：
+
+```bash
+# Android SDK
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+# Java (Android Studio bundled JDK)
+export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+export PATH=$PATH:$JAVA_HOME/bin
+```
+
+配置后执行 `source ~/.zshrc` 使其生效。
+
+### 5.4 环境变量
+
+本项目为纯本地应用，不需要额外的环境变量配置。
 
 ## 6. 构建与发布
 

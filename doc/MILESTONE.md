@@ -173,6 +173,14 @@
 
 ## 变更日志
 
+### 2026-01-30
+
+- **Android 开发环境配置**
+  - 配置 Android SDK 和 Java 环境变量
+  - 修复 Gradle 版本兼容性问题（9.0.0 → 8.13）
+  - 修复 pnpm hoisting 导致的 react-native-css-interop 解析问题
+  - Android 模拟器调试验证通过
+
 ### 2026-01-29
 
 - 创建项目文档：PRD.md、UI-UX-Design.md、Tech-Stack.md
