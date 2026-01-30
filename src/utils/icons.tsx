@@ -20,6 +20,9 @@ import {
   Edit,
   Star,
   Circle,
+  Tv,
+  AlertTriangle,
+  RefreshCw,
   type LucideIcon,
 } from "lucide-react-native";
 
@@ -45,6 +48,9 @@ const icons: LucideIcon[] = [
   Edit,
   Star,
   Circle,
+  Tv,
+  AlertTriangle,
+  RefreshCw,
 ];
 
 for (const Icon of icons) {
@@ -80,4 +86,7 @@ export {
   Edit,
   Star,
   Circle,
+  Tv,
+  AlertTriangle,
+  RefreshCw,
 };

@@ -19,8 +19,17 @@
   },
   "home": {
     "title": "Channels",
-    "empty": "No channels. Please add an IPTV source.",
     "searchPlaceholder": "Search channels"
+  },
+  "channel": {
+    "empty": "No Channels",
+    "emptyHint": "Please add an IPTV source in Settings",
+    "goToSettings": "Go to Settings",
+    "loading": "Loading channels...",
+    "error": "Failed to Load",
+    "errorHint": "Unable to fetch channel list",
+    "noResults": "No Results",
+    "noResultsHint": "Try searching with different keywords"
   },
   "favorites": {
     "title": "Favorites",
