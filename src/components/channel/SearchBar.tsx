@@ -10,7 +10,7 @@ export function SearchBar() {
   const setSearchQuery = useChannelStore((state) => state.setSearchQuery);
 
   return (
-    <View className="px-4 py-2">
+    <View className="px-4 pt-4 pb-2">
       <View className="flex-row items-center bg-muted rounded-lg px-3">
         <Search size={20} className="text-muted-foreground" />
         <Input

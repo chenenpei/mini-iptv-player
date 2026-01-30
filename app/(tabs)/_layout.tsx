@@ -1,5 +1,5 @@
-import { Home, Heart, History, Settings } from "@utils/icons";
 import { NAV_THEME } from "@utils/constants";
+import { Heart, History, Home, Settings } from "@utils/icons";
 import { Tabs } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "react-native";
@@ -20,8 +20,15 @@ export default function TabLayout() {
         },
         headerStyle: {
           backgroundColor: theme.background,
+          borderBottomWidth: 1,
+          borderBottomColor: theme.border,
         },
+        headerShadowVisible: false,
         headerTintColor: theme.text,
+        headerTitleStyle: {
+          fontSize: 24,
+          fontWeight: "600",
+        },
       }}
     >
       <Tabs.Screen
