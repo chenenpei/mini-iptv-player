@@ -12,16 +12,23 @@ export function SearchBar() {
   return (
     <View className="px-4 pt-4 pb-2">
       <View className="flex-row items-center bg-muted rounded-lg px-3">
-        <Search size={20} className="text-muted-foreground" />
+        <Search size={24} className="text-muted-foreground" />
         <Input
           value={searchQuery}
           onChangeText={setSearchQuery}
           placeholder={t("home.searchPlaceholder")}
           className="flex-1 border-0 bg-transparent"
+          accessibilityLabel={t("home.searchPlaceholder")}
+          accessibilityRole="search"
         />
         {searchQuery.length > 0 && (
-          <Pressable onPress={() => setSearchQuery("")} hitSlop={8}>
-            <X size={20} className="text-muted-foreground" />
+          <Pressable
+            onPress={() => setSearchQuery("")}
+            className="min-h-11 min-w-11 items-center justify-center active:opacity-70"
+            accessibilityLabel={t("common.clear")}
+            accessibilityRole="button"
+          >
+            <X size={24} className="text-muted-foreground" />
           </Pressable>
         )}
       </View>

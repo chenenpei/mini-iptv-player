@@ -26,32 +26,34 @@ export function Toolbar() {
     setSortBy(sortOptions[nextIndex].value);
   };
 
-  const handleLayoutPress = () => {
-    setLayoutMode(layoutMode === "list" ? "grid" : "list");
-  };
-
   return (
     <View className="flex-row items-center justify-between px-4 py-2 border-b border-border">
       {/* Sort Button */}
       <Pressable
         onPress={handleSortPress}
-        className="flex-row items-center active:opacity-70"
+        className="flex-row items-center min-h-11 active:opacity-70"
+        accessibilityLabel={`${t("channel.sortLabel")} ${currentSortLabel}`}
+        accessibilityRole="button"
+        accessibilityHint={t("channel.sortHint")}
       >
         <Text className="text-sm text-muted-foreground mr-1">
           {t("channel.sortLabel")}
         </Text>
         <Text className="text-sm">{currentSortLabel}</Text>
-        <ChevronDown size={16} className="text-muted-foreground ml-1" />
+        <ChevronDown size={24} className="text-muted-foreground ml-1" />
       </Pressable>
 
       {/* Layout Toggle */}
       <View className="flex-row items-center">
         <Pressable
           onPress={() => setLayoutMode("list")}
-          className={`p-2 rounded ${layoutMode === "list" ? "bg-muted" : ""}`}
+          className={`p-3 rounded-lg active:opacity-70 ${layoutMode === "list" ? "bg-muted" : ""}`}
+          accessibilityLabel={t("channel.listView")}
+          accessibilityRole="button"
+          accessibilityState={{ selected: layoutMode === "list" }}
         >
           <List
-            size={20}
+            size={24}
             className={
               layoutMode === "list" ? "text-foreground" : "text-muted-foreground"
             }
@@ -59,10 +61,13 @@ export function Toolbar() {
         </Pressable>
         <Pressable
           onPress={() => setLayoutMode("grid")}
-          className={`p-2 rounded ml-1 ${layoutMode === "grid" ? "bg-muted" : ""}`}
+          className={`p-3 rounded-lg ml-2 active:opacity-70 ${layoutMode === "grid" ? "bg-muted" : ""}`}
+          accessibilityLabel={t("channel.gridView")}
+          accessibilityRole="button"
+          accessibilityState={{ selected: layoutMode === "grid" }}
         >
           <LayoutGrid
-            size={20}
+            size={24}
             className={
               layoutMode === "grid" ? "text-foreground" : "text-muted-foreground"
             }

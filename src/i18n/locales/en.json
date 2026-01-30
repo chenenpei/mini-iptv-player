@@ -9,7 +9,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "add": "Add",
-    "search": "Search"
+    "search": "Search",
+    "clear": "Clear"
   },
   "tabs": {
     "home": "Home",
@@ -32,15 +33,28 @@
     "noResultsHint": "Try searching with different keywords",
     "sortLabel": "Sort:",
     "sortByName": "Name",
-    "sortByStatus": "Status"
+    "sortByStatus": "Status",
+    "sortHint": "Toggle sort order",
+    "listView": "List view",
+    "gridView": "Grid view",
+    "playHint": "Tap to play this channel",
+    "toggleGroupHint": "Tap to expand or collapse group",
+    "groupLabel": "{{name}}, {{count}} channels",
+    "groupExpanded": "expanded",
+    "groupCollapsed": "collapsed",
+    "statusAvailable": "Available",
+    "statusUnavailable": "Unavailable",
+    "statusUnknown": "Unknown"
   },
   "favorites": {
     "title": "Favorites",
-    "empty": "No favorites yet"
+    "empty": "No favorites yet",
+    "emptyHint": "Tap the star icon in channel list to add favorites"
   },
   "history": {
     "title": "History",
-    "empty": "No watch history"
+    "empty": "No watch history",
+    "emptyHint": "Channels you watch will appear here"
   },
   "settings": {
     "title": "Settings",

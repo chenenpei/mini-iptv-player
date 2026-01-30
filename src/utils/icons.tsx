@@ -25,6 +25,7 @@ import {
   RefreshCw,
   List,
   LayoutGrid,
+  Clock,
   type LucideIcon,
 } from "lucide-react-native";
 
@@ -55,6 +56,7 @@ const icons: LucideIcon[] = [
   RefreshCw,
   List,
   LayoutGrid,
+  Clock,
 ];
 
 for (const Icon of icons) {
@@ -95,4 +97,5 @@ export {
   RefreshCw,
   List,
   LayoutGrid,
+  Clock,
 };

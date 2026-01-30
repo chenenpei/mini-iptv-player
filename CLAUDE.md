@@ -152,3 +152,14 @@ IPTV 源大多使用 HTTP 协议，需要配置允许明文流量：
 ```
 
 > **注意**：修改原生配置后需要重新构建 app（`pnpm android` 或 `pnpm ios`）。
+
+### 无障碍开发规范
+
+所有 Pressable 组件必须包含无障碍属性：
+- `accessibilityLabel`: 描述元素作用
+- `accessibilityRole`: 声明元素角色
+- `accessibilityState`: 反馈当前状态（如 selected、expanded）
+
+触摸目标最小 44x44px，使用 `min-h-11 min-w-11` 类名确保符合规范。
+
+详见 [UI-UX-Design.md](doc/UI-UX-Design.md) 8.4 节无障碍实现指南。

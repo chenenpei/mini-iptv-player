@@ -21,7 +21,7 @@ function EmptyState() {
   const router = useRouter();
 
   return (
-    <View className="flex-1 items-center justify-center px-4">
+    <View className="flex-1 items-center justify-center px-4" accessibilityRole="alert">
       <Tv size={48} className="text-muted-foreground mb-4" />
       <Text className="text-base font-medium text-center">
         {t("channel.empty")}
@@ -31,7 +31,9 @@ function EmptyState() {
       </Text>
       <Pressable
         onPress={() => router.push("/settings")}
-        className="mt-4 px-4 py-2 bg-muted rounded-lg active:opacity-70"
+        className="mt-4 px-4 py-2 bg-muted rounded-lg active:opacity-70 min-h-11"
+        accessibilityLabel={t("channel.goToSettings")}
+        accessibilityRole="button"
       >
         <Text>{t("channel.goToSettings")}</Text>
       </Pressable>
@@ -60,7 +62,7 @@ function ErrorState({ onRetry }: ErrorStateProps) {
   const { t } = useTranslation();
 
   return (
-    <View className="flex-1 items-center justify-center px-4">
+    <View className="flex-1 items-center justify-center px-4" accessibilityRole="alert">
       <AlertTriangle size={48} className="text-destructive mb-4" />
       <Text className="text-base font-medium text-center">
         {t("channel.error")}
@@ -70,9 +72,11 @@ function ErrorState({ onRetry }: ErrorStateProps) {
       </Text>
       <Pressable
         onPress={onRetry}
-        className="mt-4 flex-row items-center px-4 py-2 bg-muted rounded-lg active:opacity-70"
+        className="mt-4 flex-row items-center px-4 py-2 bg-muted rounded-lg active:opacity-70 min-h-11"
+        accessibilityLabel={t("common.retry")}
+        accessibilityRole="button"
       >
-        <RefreshCw size={16} className="text-foreground mr-2" />
+        <RefreshCw size={24} className="text-foreground mr-2" />
         <Text>{t("common.retry")}</Text>
       </Pressable>
     </View>
@@ -105,6 +109,7 @@ const GroupHeader = memo(function GroupHeader({
   groupName,
   channelCount,
 }: GroupHeaderProps) {
+  const { t } = useTranslation();
   const isCollapsed = useChannelStore((state) =>
     state.collapsedGroups.has(groupName)
   );
@@ -112,16 +117,23 @@ const GroupHeader = memo(function GroupHeader({
     (state) => state.toggleGroupCollapsed
   );
 
+  const groupLabel = t("channel.groupLabel", { name: groupName, count: channelCount });
+  const stateLabel = isCollapsed ? t("channel.groupCollapsed") : t("channel.groupExpanded");
+
   return (
     <Pressable
       onPress={() => toggleGroupCollapsed(groupName)}
       className="flex-row items-center justify-between px-4 py-3 bg-muted/30 active:bg-muted/50 border-b border-border"
+      accessibilityLabel={`${groupLabel}, ${stateLabel}`}
+      accessibilityRole="button"
+      accessibilityState={{ expanded: !isCollapsed }}
+      accessibilityHint={t("channel.toggleGroupHint")}
     >
       <View className="flex-row items-center">
         {isCollapsed ? (
-          <ChevronRight size={20} className="text-muted-foreground mr-2" />
+          <ChevronRight size={24} className="text-muted-foreground mr-2" />
         ) : (
-          <ChevronDown size={20} className="text-muted-foreground mr-2" />
+          <ChevronDown size={24} className="text-muted-foreground mr-2" />
         )}
         <Text className="text-base font-semibold">{groupName}</Text>
       </View>

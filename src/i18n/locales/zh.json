@@ -9,7 +9,8 @@
     "delete": "删除",
     "edit": "编辑",
     "add": "添加",
-    "search": "搜索"
+    "search": "搜索",
+    "clear": "清除"
   },
   "tabs": {
     "home": "首页",
@@ -32,15 +33,28 @@
     "noResultsHint": "尝试使用其他关键词搜索",
     "sortLabel": "排序:",
     "sortByName": "名称",
-    "sortByStatus": "状态"
+    "sortByStatus": "状态",
+    "sortHint": "切换排序方式",
+    "listView": "列表视图",
+    "gridView": "网格视图",
+    "playHint": "点击播放此频道",
+    "toggleGroupHint": "点击展开或折叠分组",
+    "groupLabel": "{{name}}，{{count}} 个频道",
+    "groupExpanded": "已展开",
+    "groupCollapsed": "已折叠",
+    "statusAvailable": "可用",
+    "statusUnavailable": "不可用",
+    "statusUnknown": "未检测"
   },
   "favorites": {
     "title": "收藏",
-    "empty": "暂无收藏"
+    "empty": "暂无收藏频道",
+    "emptyHint": "在频道列表中点击星标收藏"
   },
   "history": {
     "title": "历史",
-    "empty": "暂无播放记录"
+    "empty": "暂无播放记录",
+    "emptyHint": "观看频道后将在此显示"
   },
   "settings": {
     "title": "设置",

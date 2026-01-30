@@ -182,6 +182,22 @@
 
 ### 2026-01-31
 
+- **UI/UX 优化审查**
+  - 新增文档：UI-UX-Design.md 8.4 节无障碍实现指南
+  - 新增文档：UI-UX-Design.md 2.4 节图标尺寸规范表
+  - 新增文档：UI-UX-Design.md 5.1 节按钮交互反馈样式
+  - 新增文档：CLAUDE.md 无障碍开发规范
+  - 所有可交互组件添加 accessibilityLabel/accessibilityRole/accessibilityState
+  - 工具栏图标尺寸统一为 24px
+  - 触摸目标优化至最小 44px (min-h-11)
+  - 按钮间距优化至 8px (ml-2)
+  - 添加按钮反馈样式 (active:opacity-70)
+  - Card 组件圆角改为 12px (rounded-xl)
+  - Input 组件圆角改为 8px (rounded-lg)
+  - Logo 容器圆角改为 12px (rounded-xl)
+  - 收藏/历史页空状态添加图标和规范化文字样式
+  - 新增 Clock 图标导出
+
 - **修复频道状态检测**
   - 将 HEAD 请求改为 GET 请求（很多流媒体服务器不支持 HEAD）
   - 增加超时时间至 8 秒
