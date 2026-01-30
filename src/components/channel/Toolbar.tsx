@@ -1,24 +1,8 @@
 import { View, Pressable } from "react-native";
 import { Text } from "@components/ui/text";
-import { useChannelStore, type SortBy, type LayoutMode } from "@stores/useChannelStore";
+import { useChannelStore, type SortBy } from "@stores/useChannelStore";
 import { useTranslation } from "react-i18next";
-import { ChevronDown } from "@utils/icons";
-import { List, LayoutGrid } from "lucide-react-native";
-import { cssInterop } from "nativewind";
-
-// Configure cssInterop for layout icons
-cssInterop(List, {
-  className: {
-    target: "style",
-    nativeStyleToProp: { color: true, opacity: true },
-  },
-});
-cssInterop(LayoutGrid, {
-  className: {
-    target: "style",
-    nativeStyleToProp: { color: true, opacity: true },
-  },
-});
+import { ChevronDown, List, LayoutGrid } from "@utils/icons";
 
 export function Toolbar() {
   const { t } = useTranslation();

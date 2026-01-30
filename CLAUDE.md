@@ -130,3 +130,25 @@ Unable to resolve "react-native-css-interop/jsx-runtime"
 ```bash
 pnpm add react-native-css-interop
 ```
+
+### HTTP 明文流量配置
+
+IPTV 源大多使用 HTTP 协议，需要配置允许明文流量：
+
+**Android** (`android/app/src/main/AndroidManifest.xml`)：
+```xml
+<application
+  android:usesCleartextTraffic="true"
+  ...>
+```
+
+**iOS** (`ios/MiniIPTVPlayer/Info.plist`)：
+```xml
+<key>NSAppTransportSecurity</key>
+<dict>
+  <key>NSAllowsArbitraryLoads</key>
+  <true/>
+</dict>
+```
+
+> **注意**：修改原生配置后需要重新构建 app（`pnpm android` 或 `pnpm ios`）。

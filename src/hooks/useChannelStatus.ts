@@ -1,109 +1,122 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useChannelStore } from "@stores/useChannelStore";
 import type { Channel, ChannelStatus } from "@/types/channel";
 
-const CHECK_TIMEOUT = 3000; // 3 seconds
+const CHECK_TIMEOUT = 8000; // 8 seconds (streaming servers can be slow)
+const MAX_CONCURRENT = 3; // Max concurrent requests
+const MOUNT_DELAY = 300; // Delay before starting checks after mount
 const checkedUrls = new Set<string>();
+const pendingQueue: Channel[] = [];
+let activeRequests = 0;
+let isProcessingPaused = false;
+let resumeTimeout: ReturnType<typeof setTimeout> | null = null;
 
 async function checkChannelStatus(url: string): Promise<ChannelStatus> {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), CHECK_TIMEOUT);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), CHECK_TIMEOUT);
 
+  try {
+    // Use GET instead of HEAD - many streaming servers don't support HEAD
     const response = await fetch(url, {
-      method: "HEAD",
+      method: "GET",
       signal: controller.signal,
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
     });
 
     clearTimeout(timeoutId);
 
-    if (response.ok) {
-      return "available";
-    }
-    return "unavailable";
+    // We got response headers, that's enough to know it's reachable
+    // Don't read the body to save bandwidth
+    const isAvailable = response.ok;
+
+    // Abort to stop downloading body
+    controller.abort();
+
+    return isAvailable ? "available" : "unavailable";
   } catch {
+    clearTimeout(timeoutId);
     return "unavailable";
   }
 }
 
+let storeSetStatus: ((id: string, status: ChannelStatus) => void) | null = null;
+
+function processQueue() {
+  if (isProcessingPaused) return;
+
+  while (activeRequests < MAX_CONCURRENT && pendingQueue.length > 0) {
+    const channel = pendingQueue.shift();
+    if (!channel) break;
+
+    // Skip if already checked
+    if (checkedUrls.has(channel.url)) {
+      continue;
+    }
+
+    checkedUrls.add(channel.url);
+    activeRequests++;
+
+    checkChannelStatus(channel.url)
+      .then((status) => {
+        if (storeSetStatus) {
+          storeSetStatus(channel.id, status);
+        }
+      })
+      .finally(() => {
+        activeRequests--;
+        processQueue();
+      });
+  }
+}
+
+// Pause processing and schedule resume after delay
+function scheduleProcessing() {
+  isProcessingPaused = true;
+  if (resumeTimeout) {
+    clearTimeout(resumeTimeout);
+  }
+  resumeTimeout = setTimeout(() => {
+    isProcessingPaused = false;
+    processQueue();
+  }, MOUNT_DELAY);
+}
+
 export function useChannelStatusCheck(channel: Channel) {
   const setStatus = useChannelStore((state) => state.setStatus);
-  const statusMap = useChannelStore((state) => state.statusMap);
-  const isChecking = useRef(false);
+  // Only subscribe to this channel's status
+  const currentStatus = useChannelStore(
+    (state) => state.statusMap[channel.id]
+  );
+
+  // Store reference to setStatus for the queue processor
+  storeSetStatus = setStatus;
 
   useEffect(() => {
-    // Skip if already checked or checking
-    if (checkedUrls.has(channel.url) || isChecking.current) {
+    // Skip if already checked or in queue
+    if (checkedUrls.has(channel.url)) {
       return;
     }
 
     // Skip if status already known
-    if (statusMap[channel.id] && statusMap[channel.id] !== "unknown") {
+    if (currentStatus && currentStatus !== "unknown") {
       return;
     }
 
-    isChecking.current = true;
-    checkedUrls.add(channel.url);
-
-    checkChannelStatus(channel.url).then((status) => {
-      setStatus(channel.id, status);
-      isChecking.current = false;
-    });
-  }, [channel.id, channel.url, setStatus, statusMap]);
-}
-
-export function useBatchChannelStatus(channels: Channel[]) {
-  const setMultipleStatus = useChannelStore(
-    (state) => state.setMultipleStatus
-  );
-  const statusMap = useChannelStore((state) => state.statusMap);
-
-  useEffect(() => {
-    const uncheckedChannels = channels.filter(
-      (channel) =>
-        !checkedUrls.has(channel.url) &&
-        (!statusMap[channel.id] || statusMap[channel.id] === "unknown")
-    );
-
-    if (uncheckedChannels.length === 0) return;
-
-    // Check channels in parallel with a limit
-    const checkBatch = async (batch: Channel[]) => {
-      const results: Record<string, ChannelStatus> = {};
-
-      await Promise.all(
-        batch.map(async (channel) => {
-          checkedUrls.add(channel.url);
-          const status = await checkChannelStatus(channel.url);
-          results[channel.id] = status;
-        })
-      );
-
-      setMultipleStatus(results);
-    };
-
-    // Check in batches of 5 to avoid overwhelming the network
-    const batchSize = 5;
-    const batches: Channel[][] = [];
-    for (let i = 0; i < uncheckedChannels.length; i += batchSize) {
-      batches.push(uncheckedChannels.slice(i, i + batchSize));
+    // Skip if already in queue
+    if (pendingQueue.some((c) => c.id === channel.id)) {
+      return;
     }
 
-    // Process batches sequentially
-    let currentBatch = 0;
-    const processNextBatch = () => {
-      if (currentBatch < batches.length) {
-        checkBatch(batches[currentBatch]).then(() => {
-          currentBatch++;
-          processNextBatch();
-        });
-      }
-    };
-
-    processNextBatch();
-  }, [channels, setMultipleStatus, statusMap]);
+    // Add to queue and schedule processing
+    pendingQueue.push(channel);
+    scheduleProcessing();
+  }, [channel.id, channel.url, currentStatus]);
 }
 
 export function clearStatusCache() {
   checkedUrls.clear();
+  pendingQueue.length = 0;
+  activeRequests = 0;
 }

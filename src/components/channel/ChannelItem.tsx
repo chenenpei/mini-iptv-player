@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { View, Pressable, Image } from "react-native";
 import type { Channel, ChannelStatus } from "@/types/channel";
 import { Text } from "@components/ui/text";
@@ -11,11 +12,13 @@ interface ChannelItemProps {
   onPress: (channel: Channel) => void;
 }
 
-export function ChannelItem({ channel, onPress }: ChannelItemProps) {
-  const statusMap = useChannelStore((state) => state.statusMap);
-  const status: ChannelStatus = statusMap[channel.id] ?? "unknown";
+export const ChannelItem = memo(function ChannelItem({ channel, onPress }: ChannelItemProps) {
+  // Only subscribe to this channel's status, not the entire map
+  const status = useChannelStore(
+    (state) => state.statusMap[channel.id] ?? "unknown"
+  ) as ChannelStatus;
 
-  // Trigger status check when item becomes visible
+  // Check status with rate-limited queue
   useChannelStatusCheck(channel);
 
   return (
@@ -52,4 +55,4 @@ export function ChannelItem({ channel, onPress }: ChannelItemProps) {
       <StatusIndicator status={status} />
     </Pressable>
   );
-}
+});

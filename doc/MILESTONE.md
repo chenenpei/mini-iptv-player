@@ -180,6 +180,18 @@
 
 ## 变更日志
 
+### 2026-01-31
+
+- **修复频道状态检测**
+  - 将 HEAD 请求改为 GET 请求（很多流媒体服务器不支持 HEAD）
+  - 增加超时时间至 8 秒
+  - 添加 User-Agent header
+- **修复 HTTP 明文流量被阻止问题**
+  - Android：在 AndroidManifest.xml 添加 `android:usesCleartextTraffic="true"`
+  - iOS：在 Info.plist 设置 `NSAllowsArbitraryLoads` 为 `true`
+- **优化列表性能**
+  - 使用 FlatList 配合 `removeClippedSubviews`、`maxToRenderPerBatch`、`windowSize` 优化
+
 ### 2026-01-30
 
 - **完成 M1：频道管理**

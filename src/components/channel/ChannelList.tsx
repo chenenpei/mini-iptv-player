@@ -1,14 +1,15 @@
-import { View, ScrollView, ActivityIndicator, Pressable } from "react-native";
+import { memo, useCallback } from "react";
+import { View, ActivityIndicator, Pressable, FlatList } from "react-native";
 import { Text } from "@components/ui/text";
-import { ChannelGroup } from "./ChannelGroup";
+import { ChannelItem } from "./ChannelItem";
 import { ChannelGrid } from "./ChannelGrid";
 import { SearchBar } from "./SearchBar";
 import { Toolbar } from "./Toolbar";
 import { useChannels } from "@hooks/useChannels";
 import { useChannelStore } from "@stores/useChannelStore";
 import { useTranslation } from "react-i18next";
-import { Tv, AlertTriangle, RefreshCw, Search } from "@utils/icons";
-import type { Channel } from "@/types/channel";
+import { Tv, AlertTriangle, RefreshCw, Search, ChevronDown, ChevronRight } from "@utils/icons";
+import type { Channel, ChannelGroup as ChannelGroupType } from "@/types/channel";
 import { useRouter } from "expo-router";
 
 interface ChannelListProps {
@@ -94,6 +95,74 @@ function NoResultsState() {
   );
 }
 
+// Group header component
+interface GroupHeaderProps {
+  groupName: string;
+  channelCount: number;
+}
+
+const GroupHeader = memo(function GroupHeader({
+  groupName,
+  channelCount,
+}: GroupHeaderProps) {
+  const isCollapsed = useChannelStore((state) =>
+    state.collapsedGroups.has(groupName)
+  );
+  const toggleGroupCollapsed = useChannelStore(
+    (state) => state.toggleGroupCollapsed
+  );
+
+  return (
+    <Pressable
+      onPress={() => toggleGroupCollapsed(groupName)}
+      className="flex-row items-center justify-between px-4 py-3 bg-muted/30 active:bg-muted/50 border-b border-border"
+    >
+      <View className="flex-row items-center">
+        {isCollapsed ? (
+          <ChevronRight size={20} className="text-muted-foreground mr-2" />
+        ) : (
+          <ChevronDown size={20} className="text-muted-foreground mr-2" />
+        )}
+        <Text className="text-base font-semibold">{groupName}</Text>
+      </View>
+      <Text className="text-sm text-muted-foreground">({channelCount})</Text>
+    </Pressable>
+  );
+});
+
+// Group channels component (collapsible)
+interface GroupChannelsProps {
+  groupName: string;
+  channels: Channel[];
+  onChannelPress: (channel: Channel) => void;
+}
+
+const GroupChannels = memo(function GroupChannels({
+  groupName,
+  channels,
+  onChannelPress,
+}: GroupChannelsProps) {
+  const isCollapsed = useChannelStore((state) =>
+    state.collapsedGroups.has(groupName)
+  );
+
+  if (isCollapsed) {
+    return null;
+  }
+
+  return (
+    <View>
+      {channels.map((channel) => (
+        <ChannelItem
+          key={channel.id}
+          channel={channel}
+          onPress={onChannelPress}
+        />
+      ))}
+    </View>
+  );
+});
+
 export function ChannelList({ onChannelPress }: ChannelListProps) {
   const router = useRouter();
   const layoutMode = useChannelStore((state) => state.layoutMode);
@@ -106,14 +175,38 @@ export function ChannelList({ onChannelPress }: ChannelListProps) {
     refetch,
   } = useChannels();
 
-  const handleChannelPress = (channel: Channel) => {
-    if (onChannelPress) {
-      onChannelPress(channel);
-    } else {
-      // Default navigation to player
-      router.push(`/player/${channel.id}`);
-    }
-  };
+  const handleChannelPress = useCallback(
+    (channel: Channel) => {
+      if (onChannelPress) {
+        onChannelPress(channel);
+      } else {
+        router.push(`/player/${channel.id}`);
+      }
+    },
+    [onChannelPress, router]
+  );
+
+  const renderGroup = useCallback(
+    ({ item: group }: { item: ChannelGroupType }) => (
+      <View>
+        <GroupHeader
+          groupName={group.name}
+          channelCount={group.channels.length}
+        />
+        <GroupChannels
+          groupName={group.name}
+          channels={group.channels}
+          onChannelPress={handleChannelPress}
+        />
+      </View>
+    ),
+    [handleChannelPress]
+  );
+
+  const keyExtractor = useCallback(
+    (item: ChannelGroupType) => item.name,
+    []
+  );
 
   // Loading state
   if (isLoading) {
@@ -167,15 +260,14 @@ export function ChannelList({ onChannelPress }: ChannelListProps) {
       {layoutMode === "grid" ? (
         <ChannelGrid channels={channels} onChannelPress={handleChannelPress} />
       ) : (
-        <ScrollView className="flex-1">
-          {groupedChannels.map((group) => (
-            <ChannelGroup
-              key={group.name}
-              group={group}
-              onChannelPress={handleChannelPress}
-            />
-          ))}
-        </ScrollView>
+        <FlatList
+          data={groupedChannels}
+          renderItem={renderGroup}
+          keyExtractor={keyExtractor}
+          removeClippedSubviews={true}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+        />
       )}
     </View>
   );

@@ -411,7 +411,27 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 > **SDK 55 注意**：New Architecture 默认启用且不可禁用，`newArchEnabled` 配置项已移除。
 
-### 6.2 构建命令
+### 6.2 HTTP 明文流量配置
+
+IPTV 源大多使用 HTTP 协议，需在原生层配置允许明文流量：
+
+**Android** (`android/app/src/main/AndroidManifest.xml`)：
+```xml
+<application
+  android:usesCleartextTraffic="true"
+  ...>
+```
+
+**iOS** (`ios/MiniIPTVPlayer/Info.plist`)：
+```xml
+<key>NSAppTransportSecurity</key>
+<dict>
+  <key>NSAllowsArbitraryLoads</key>
+  <true/>
+</dict>
+```
+
+### 6.3 构建命令
 
 ```bash
 # 开发构建 (Development Client)
@@ -425,7 +445,7 @@ eas build --profile preview --platform all
 eas build --profile production --platform all
 ```
 
-### 6.3 EAS 配置
+### 6.4 EAS 配置
 
 ```json
 // eas.json

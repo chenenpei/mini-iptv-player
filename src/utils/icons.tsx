@@ -23,6 +23,8 @@ import {
   Tv,
   AlertTriangle,
   RefreshCw,
+  List,
+  LayoutGrid,
   type LucideIcon,
 } from "lucide-react-native";
 
@@ -51,6 +53,8 @@ const icons: LucideIcon[] = [
   Tv,
   AlertTriangle,
   RefreshCw,
+  List,
+  LayoutGrid,
 ];
 
 for (const Icon of icons) {
@@ -89,4 +93,6 @@ export {
   Tv,
   AlertTriangle,
   RefreshCw,
+  List,
+  LayoutGrid,
 };

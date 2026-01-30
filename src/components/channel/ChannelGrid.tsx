@@ -1,4 +1,5 @@
-import { View, Pressable, Image, ScrollView, useWindowDimensions } from "react-native";
+import { memo, useCallback } from "react";
+import { View, Pressable, Image, useWindowDimensions, FlatList } from "react-native";
 import type { Channel, ChannelStatus } from "@/types/channel";
 import { Text } from "@components/ui/text";
 import { StatusIndicator } from "./StatusIndicator";
@@ -12,10 +13,17 @@ interface ChannelGridItemProps {
   width: number;
 }
 
-function ChannelGridItem({ channel, onPress, width }: ChannelGridItemProps) {
-  const statusMap = useChannelStore((state) => state.statusMap);
-  const status: ChannelStatus = statusMap[channel.id] ?? "unknown";
+const ChannelGridItem = memo(function ChannelGridItem({
+  channel,
+  onPress,
+  width,
+}: ChannelGridItemProps) {
+  // Only subscribe to this channel's status, not the entire map
+  const status = useChannelStore(
+    (state) => state.statusMap[channel.id] ?? "unknown"
+  ) as ChannelStatus;
 
+  // Check status with rate-limited queue
   useChannelStatusCheck(channel);
 
   return (
@@ -50,7 +58,7 @@ function ChannelGridItem({ channel, onPress, width }: ChannelGridItemProps) {
       </View>
     </Pressable>
   );
-}
+});
 
 interface ChannelGridProps {
   channels: Channel[];
@@ -62,18 +70,28 @@ export function ChannelGrid({ channels, onChannelPress }: ChannelGridProps) {
   const numColumns = 3;
   const itemWidth = screenWidth / numColumns;
 
+  const renderItem = useCallback(
+    ({ item }: { item: Channel }) => (
+      <ChannelGridItem
+        channel={item}
+        onPress={onChannelPress}
+        width={itemWidth}
+      />
+    ),
+    [onChannelPress, itemWidth]
+  );
+
+  const keyExtractor = useCallback((item: Channel) => item.id, []);
+
   return (
-    <ScrollView className="flex-1">
-      <View className="flex-row flex-wrap">
-        {channels.map((channel) => (
-          <ChannelGridItem
-            key={channel.id}
-            channel={channel}
-            onPress={onChannelPress}
-            width={itemWidth}
-          />
-        ))}
-      </View>
-    </ScrollView>
+    <FlatList
+      data={channels}
+      renderItem={renderItem}
+      keyExtractor={keyExtractor}
+      numColumns={numColumns}
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={12}
+      windowSize={5}
+    />
   );
 }
