@@ -5,7 +5,7 @@
 | 阶段 | 名称 | 状态 | 完成日期 |
 |------|------|------|----------|
 | M0 | 项目初始化 | ✅ 已完成 | 2026-01-29 |
-| M1 | 频道管理 | 🚧 进行中 | - |
+| M1 | 频道管理 | ✅ 已完成 | 2026-01-30 |
 | M2 | 核心播放功能 | 待开始 | - |
 | M3 | 收藏与历史 | 待开始 | - |
 | M4 | 设置与个性化 | 待开始 | - |
@@ -47,19 +47,21 @@
 
 ### 任务清单
 
-- [ ] 创建类型定义（Channel、Source）
-- [ ] 实现 M3U 解析器（手动实现，无第三方依赖）
-- [ ] 创建 useSourceStore（MMKV 持久化，含默认源）
-- [ ] 实现 channelService（频道数据获取服务）
-- [ ] 创建 useChannels hook（React Query）
-- [ ] 实现 StatusIndicator 组件
-- [ ] 实现 ChannelItem 组件
-- [ ] 实现 ChannelGroup 组件（可折叠）
-- [ ] 实现 SearchBar 组件
-- [ ] 实现 ChannelList 组件
-- [ ] 创建 useChannelStatus hook（懒加载状态检测）
-- [ ] 更新首页（频道列表展示）
-- [ ] 更新 i18n 翻译
+- [x] 创建类型定义（Channel、Source）
+- [x] 实现 M3U 解析器（手动实现，无第三方依赖）
+- [x] 创建 useSourceStore（MMKV 持久化，含默认源）
+- [x] 实现 channelService（频道数据获取服务）
+- [x] 创建 useChannels hook（React Query）
+- [x] 实现 StatusIndicator 组件
+- [x] 实现 ChannelItem 组件
+- [x] 实现 ChannelGroup 组件（可折叠）
+- [x] 实现 SearchBar 组件
+- [x] 实现 ChannelList 组件
+- [x] 创建 useChannelStatus hook（懒加载状态检测）
+- [x] 更新首页（频道列表展示）
+- [x] 更新 i18n 翻译
+- [x] 实现排序功能（按名称、状态）
+- [x] 实现布局切换（列表/网格）
 
 ### 交付物
 
@@ -180,18 +182,19 @@
 
 ### 2026-01-30
 
-- **M1 频道管理（进行中）**
+- **完成 M1：频道管理**
   - 创建类型定义：Channel、ChannelGroup、ChannelStatus、Source
   - 实现 M3U 解析器（手动实现，无第三方依赖）
   - 创建 useSourceStore（MMKV 持久化，含默认中国频道源）
   - 实现 channelService（数据获取、分组、过滤、排序）
   - 创建 useChannels hook（React Query 缓存）
-  - 创建 useChannelStore（搜索状态、分组折叠状态）
+  - 创建 useChannelStore（搜索、排序、布局、分组折叠状态）
   - 创建 useChannelStatus hook（懒加载状态检测）
-  - 实现频道组件：StatusIndicator、ChannelItem、ChannelGroup、SearchBar、ChannelList
+  - 实现频道组件：StatusIndicator、ChannelItem、ChannelGroup、ChannelGrid、SearchBar、Toolbar、ChannelList
+  - 实现排序功能（按名称、状态）
+  - 实现布局切换（列表/网格视图）
   - 更新首页展示频道列表
   - 添加频道相关 i18n 翻译
-  - 待完成：排序功能、布局切换（列表/网格）
 
 - **Android 开发环境配置**
   - 配置 Android SDK 和 Java 环境变量
