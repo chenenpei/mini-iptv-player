@@ -18,8 +18,9 @@ const AlertDialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => {
   return (
     <AlertDialogPrimitive.Overlay
+      style={StyleSheet.absoluteFill}
       className={cn(
-        "z-50 flex items-end justify-center p-4 md:items-center",
+        "z-50 flex items-center justify-center p-4",
         className
       )}
       ref={ref}
@@ -29,7 +30,7 @@ const AlertDialogOverlay = React.forwardRef<
         entering={FadeIn.duration(150)}
         exiting={FadeOut.duration(150)}
         style={StyleSheet.absoluteFill}
-        className="bg-black/80"
+        className="bg-black/50"
       />
       {props.children}
     </AlertDialogPrimitive.Overlay>
