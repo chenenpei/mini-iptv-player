@@ -76,11 +76,14 @@
   "settings": {
     "title": "Settings",
     "sources": "IPTV Sources",
+    "appearance": "Appearance",
     "theme": "Theme",
     "themeSystem": "System",
     "themeLight": "Light",
     "themeDark": "Dark",
     "language": "Language",
+    "languageZh": "中文",
+    "languageEn": "English",
     "about": "About"
   },
   "sources": {
@@ -89,7 +92,27 @@
     "edit": "Edit Source",
     "name": "Name",
     "url": "URL",
-    "deleteConfirm": "Are you sure you want to delete this source?"
+    "empty": "No IPTV Sources",
+    "emptyHint": "Tap the + button to add a source",
+    "enabled": "Enable this source",
+    "namePlaceholder": "Enter source name",
+    "urlPlaceholder": "Enter M3U/M3U8 URL",
+    "nameHint": "Give this source a name for easy identification",
+    "urlHint": "Enter the URL of the M3U/M3U8 playlist",
+    "nameRequired": "Please enter a source name",
+    "urlRequired": "Please enter a M3U URL",
+    "urlInvalid": "Please enter a valid URL",
+    "default": "Default",
+    "deleteConfirm": "Are you sure you want to delete this source?",
+    "deleteTitle": "Delete Source",
+    "deleteDescription": "This action cannot be undone. Are you sure?",
+    "cannotDelete": "Default source cannot be deleted"
+  },
+  "about": {
+    "title": "About",
+    "appName": "Mini IPTV Player",
+    "version": "Version {{version}}",
+    "description": "A lightweight cross-platform IPTV player"
   },
   "player": {
     "loading": "Loading...",

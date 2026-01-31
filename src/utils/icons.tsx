@@ -33,6 +33,13 @@ import {
   ArrowLeft,
   SkipBack,
   SkipForward,
+  Globe,
+  Sun,
+  Moon,
+  Monitor,
+  Info,
+  Radio,
+  Check,
   type LucideIcon,
 } from "lucide-react-native";
 
@@ -70,6 +77,13 @@ const icons: LucideIcon[] = [
   ArrowLeft,
   SkipBack,
   SkipForward,
+  Globe,
+  Sun,
+  Moon,
+  Monitor,
+  Info,
+  Radio,
+  Check,
 ];
 
 for (const Icon of icons) {
@@ -122,4 +136,11 @@ export {
   ArrowLeft,
   SkipBack,
   SkipForward,
+  Globe,
+  Sun,
+  Moon,
+  Monitor,
+  Info,
+  Radio,
+  Check,
 };

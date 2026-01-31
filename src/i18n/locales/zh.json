@@ -76,11 +76,14 @@
   "settings": {
     "title": "设置",
     "sources": "IPTV 源管理",
+    "appearance": "外观",
     "theme": "主题",
     "themeSystem": "跟随系统",
     "themeLight": "浅色",
     "themeDark": "深色",
     "language": "语言",
+    "languageZh": "中文",
+    "languageEn": "English",
     "about": "关于"
   },
   "sources": {
@@ -89,7 +92,27 @@
     "edit": "编辑源",
     "name": "名称",
     "url": "URL",
-    "deleteConfirm": "确定要删除这个源吗？"
+    "empty": "暂无 IPTV 源",
+    "emptyHint": "点击右上角添加源",
+    "enabled": "启用此源",
+    "namePlaceholder": "输入源名称",
+    "urlPlaceholder": "输入 M3U/M3U8 地址",
+    "nameHint": "给这个源取一个便于识别的名称",
+    "urlHint": "输入 M3U/M3U8 播放列表的 URL",
+    "nameRequired": "请输入源名称",
+    "urlRequired": "请输入 M3U 地址",
+    "urlInvalid": "请输入有效的 URL",
+    "default": "默认",
+    "deleteConfirm": "确定要删除这个源吗？",
+    "deleteTitle": "删除源",
+    "deleteDescription": "删除后将无法恢复，确定要删除吗？",
+    "cannotDelete": "默认源不可删除"
+  },
+  "about": {
+    "title": "关于",
+    "appName": "Mini IPTV Player",
+    "version": "版本 {{version}}",
+    "description": "一个轻量级的跨平台 IPTV 播放器"
   },
   "player": {
     "loading": "加载中...",
