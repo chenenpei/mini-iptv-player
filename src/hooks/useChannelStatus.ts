@@ -1,15 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import PQueue from "p-queue";
 import { useChannelStore } from "@stores/useChannelStore";
 import type { Channel, ChannelStatus } from "@/types/channel";
 
 const CHECK_TIMEOUT = 8000; // 8 seconds (streaming servers can be slow)
 const MAX_CONCURRENT = 3; // Max concurrent requests
 const MOUNT_DELAY = 300; // Delay before starting checks after mount
+
+// Shared queue instance with concurrency control
+const queue = new PQueue({ concurrency: MAX_CONCURRENT });
+
+// Track checked URLs to avoid duplicate requests
 const checkedUrls = new Set<string>();
-const pendingQueue: Channel[] = [];
-let activeRequests = 0;
-let isProcessingPaused = false;
-let resumeTimeout: ReturnType<typeof setTimeout> | null = null;
+
+// Debounce timer for batch processing
+let mountDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 async function checkChannelStatus(url: string): Promise<ChannelStatus> {
   const controller = new AbortController();
@@ -21,14 +26,14 @@ async function checkChannelStatus(url: string): Promise<ChannelStatus> {
       method: "GET",
       signal: controller.signal,
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
       },
     });
 
     clearTimeout(timeoutId);
 
     // We got response headers, that's enough to know it's reachable
-    // Don't read the body to save bandwidth
     const isAvailable = response.ok;
 
     // Abort to stop downloading body
@@ -41,45 +46,18 @@ async function checkChannelStatus(url: string): Promise<ChannelStatus> {
   }
 }
 
-let storeSetStatus: ((id: string, status: ChannelStatus) => void) | null = null;
-
-function processQueue() {
-  if (isProcessingPaused) return;
-
-  while (activeRequests < MAX_CONCURRENT && pendingQueue.length > 0) {
-    const channel = pendingQueue.shift();
-    if (!channel) break;
-
-    // Skip if already checked
-    if (checkedUrls.has(channel.url)) {
-      continue;
-    }
-
-    checkedUrls.add(channel.url);
-    activeRequests++;
-
-    checkChannelStatus(channel.url)
-      .then((status) => {
-        if (storeSetStatus) {
-          storeSetStatus(channel.id, status);
-        }
-      })
-      .finally(() => {
-        activeRequests--;
-        processQueue();
-      });
+// Schedule queue start with debounce to batch initial mounts
+function scheduleQueueStart() {
+  if (mountDebounceTimer) {
+    clearTimeout(mountDebounceTimer);
   }
-}
 
-// Pause processing and schedule resume after delay
-function scheduleProcessing() {
-  isProcessingPaused = true;
-  if (resumeTimeout) {
-    clearTimeout(resumeTimeout);
-  }
-  resumeTimeout = setTimeout(() => {
-    isProcessingPaused = false;
-    processQueue();
+  // Pause queue while batching
+  queue.pause();
+
+  mountDebounceTimer = setTimeout(() => {
+    queue.start();
+    mountDebounceTimer = null;
   }, MOUNT_DELAY);
 }
 
@@ -90,11 +68,11 @@ export function useChannelStatusCheck(channel: Channel) {
     (state) => state.statusMap[channel.id]
   );
 
-  // Store reference to setStatus for the queue processor
-  storeSetStatus = setStatus;
+  // Track if already queued to prevent duplicates
+  const isQueued = useRef(false);
 
   useEffect(() => {
-    // Skip if already checked or in queue
+    // Skip if already checked
     if (checkedUrls.has(channel.url)) {
       return;
     }
@@ -104,19 +82,29 @@ export function useChannelStatusCheck(channel: Channel) {
       return;
     }
 
-    // Skip if already in queue
-    if (pendingQueue.some((c) => c.id === channel.id)) {
+    // Skip if already queued
+    if (isQueued.current) {
       return;
     }
 
-    // Add to queue and schedule processing
-    pendingQueue.push(channel);
-    scheduleProcessing();
-  }, [channel.id, channel.url, currentStatus]);
+    isQueued.current = true;
+    checkedUrls.add(channel.url);
+
+    // Add to queue with automatic concurrency control
+    queue.add(async () => {
+      const status = await checkChannelStatus(channel.url);
+      setStatus(channel.id, status);
+    });
+
+    // Schedule queue start with debounce
+    scheduleQueueStart();
+  }, [channel.id, channel.url, currentStatus, setStatus]);
 }
 
 export function clearStatusCache() {
   checkedUrls.clear();
-  pendingQueue.length = 0;
-  activeRequests = 0;
+  queue.clear();
 }
+
+// Export queue for advanced usage (e.g., priority control)
+export { queue as statusCheckQueue };
