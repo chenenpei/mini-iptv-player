@@ -79,6 +79,7 @@ export default function PlayerScreen() {
   const { channelId: initialChannelId } = useLocalSearchParams<{ channelId: string }>();
   const router = useRouter();
   const { t } = useTranslation();
+  const { channels } = useChannels();
 
   // Use local state for current channel to avoid page navigation on switch
   const [currentChannelId, setCurrentChannelId] = useState(initialChannelId || "");
@@ -87,6 +88,7 @@ export default function PlayerScreen() {
   const {
     isPlaying,
     isMuted,
+    volume,
     isFullscreen,
     isLoading,
     error,
@@ -96,9 +98,18 @@ export default function PlayerScreen() {
     handleRetry,
     handlePlayPause,
     handleMuteToggle,
+    handleVolumeChange,
     handleFullscreenToggle,
     exitFullscreen,
   } = usePlayer(currentChannelId, channel?.url || "");
+
+  // Find current channel index for prev/next navigation
+  const currentIndex = useMemo(
+    () => channels.findIndex((c) => c.id === currentChannelId),
+    [channels, currentChannelId]
+  );
+  const hasPrevious = currentIndex > 0;
+  const hasNext = currentIndex >= 0 && currentIndex < channels.length - 1;
 
   // Handle back button to exit fullscreen first
   useEffect(() => {
@@ -124,6 +135,18 @@ export default function PlayerScreen() {
     },
     [currentChannelId]
   );
+
+  const handlePrevious = useCallback(() => {
+    if (hasPrevious) {
+      setCurrentChannelId(channels[currentIndex - 1].id);
+    }
+  }, [hasPrevious, channels, currentIndex]);
+
+  const handleNext = useCallback(() => {
+    if (hasNext) {
+      setCurrentChannelId(channels[currentIndex + 1].id);
+    }
+  }, [hasNext, channels, currentIndex]);
 
   const handleGoBack = useCallback(() => {
     router.back();
@@ -171,15 +194,21 @@ export default function PlayerScreen() {
             url={channel.url}
             isPlaying={isPlaying}
             isMuted={isMuted}
+            volume={volume}
             isFullscreen={isFullscreen}
             isLoading={isLoading}
             error={error}
+            hasPrevious={hasPrevious}
+            hasNext={hasNext}
             onLoad={handleLoad}
             onBuffer={handleBuffer}
             onError={handleError}
             onPlayPause={handlePlayPause}
             onMuteToggle={handleMuteToggle}
+            onVolumeChange={handleVolumeChange}
             onFullscreenToggle={handleFullscreenToggle}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
             onRetry={handleRetry}
           />
         </View>
@@ -212,15 +241,21 @@ export default function PlayerScreen() {
           url={channel.url}
           isPlaying={isPlaying}
           isMuted={isMuted}
+          volume={volume}
           isFullscreen={isFullscreen}
           isLoading={isLoading}
           error={error}
+          hasPrevious={hasPrevious}
+          hasNext={hasNext}
           onLoad={handleLoad}
           onBuffer={handleBuffer}
           onError={handleError}
           onPlayPause={handlePlayPause}
           onMuteToggle={handleMuteToggle}
+          onVolumeChange={handleVolumeChange}
           onFullscreenToggle={handleFullscreenToggle}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
           onRetry={handleRetry}
         />
 

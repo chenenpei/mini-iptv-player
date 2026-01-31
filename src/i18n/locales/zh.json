@@ -86,8 +86,13 @@
     "pause": "暂停",
     "mute": "静音",
     "unmute": "取消静音",
+    "volume": "音量",
+    "previous": "上一个频道",
+    "next": "下一个频道",
     "fullscreen": "全屏",
     "exitFullscreen": "退出全屏",
+    "showControls": "显示控件",
+    "hideControls": "隐藏控件",
     "noChannel": "频道不存在",
     "goBack": "返回"
   }

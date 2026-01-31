@@ -86,8 +86,13 @@
     "pause": "Pause",
     "mute": "Mute",
     "unmute": "Unmute",
+    "volume": "Volume",
+    "previous": "Previous channel",
+    "next": "Next channel",
     "fullscreen": "Fullscreen",
     "exitFullscreen": "Exit fullscreen",
+    "showControls": "Show controls",
+    "hideControls": "Hide controls",
     "noChannel": "Channel not found",
     "goBack": "Go back"
   }
