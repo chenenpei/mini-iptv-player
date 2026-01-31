@@ -1,6 +1,13 @@
 import { memo, useCallback, useMemo } from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 import { Globe, Check } from "@/utils/icons";
 import { useSettingsStore, type Language } from "@/stores/useSettingsStore";
 import { useTranslation } from "react-i18next";
@@ -41,7 +48,15 @@ const LanguageOption = memo(function LanguageOption({
   );
 });
 
-export const LanguageSelector = memo(function LanguageSelector() {
+interface LanguageSelectorDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export const LanguageSelectorDialog = memo(function LanguageSelectorDialog({
+  open,
+  onOpenChange,
+}: LanguageSelectorDialogProps) {
   const { t, i18n } = useTranslation();
   const language = useSettingsStore((state) => state.language);
   const setLanguage = useSettingsStore((state) => state.setLanguage);
@@ -50,8 +65,9 @@ export const LanguageSelector = memo(function LanguageSelector() {
     (lang: Language) => {
       setLanguage(lang);
       i18n.changeLanguage(lang);
+      onOpenChange(false);
     },
-    [setLanguage, i18n]
+    [setLanguage, i18n, onOpenChange]
   );
 
   const options = useMemo(
@@ -69,17 +85,31 @@ export const LanguageSelector = memo(function LanguageSelector() {
   );
 
   return (
-    <View className="bg-card rounded-xl mx-4 overflow-hidden">
-      {options.map((option, index) => (
-        <LanguageOption
-          key={option.lang}
-          lang={option.lang}
-          label={option.label}
-          isSelected={language === option.lang}
-          onPress={handleSelect}
-          isLast={index === options.length - 1}
-        />
-      ))}
-    </View>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent className="p-0 max-w-xs">
+        <AlertDialogHeader className="px-4 pt-4 pb-2">
+          <AlertDialogTitle className="text-center">
+            {t("settings.language")}
+          </AlertDialogTitle>
+        </AlertDialogHeader>
+        <View>
+          {options.map((option, index) => (
+            <LanguageOption
+              key={option.lang}
+              lang={option.lang}
+              label={option.label}
+              isSelected={language === option.lang}
+              onPress={handleSelect}
+              isLast={index === options.length - 1}
+            />
+          ))}
+        </View>
+        <View className="p-4 pt-2">
+          <AlertDialogCancel>
+            <Text>{t("common.cancel")}</Text>
+          </AlertDialogCancel>
+        </View>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 });

@@ -1,6 +1,13 @@
 import { memo, useCallback, useMemo } from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 import { Sun, Moon, Monitor, Check } from "@/utils/icons";
 import { useSettingsStore, type ThemeMode } from "@/stores/useSettingsStore";
 import { useTranslation } from "react-i18next";
@@ -43,7 +50,15 @@ const ThemeOption = memo(function ThemeOption({
   );
 });
 
-export const ThemeSelector = memo(function ThemeSelector() {
+interface ThemeSelectorDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export const ThemeSelectorDialog = memo(function ThemeSelectorDialog({
+  open,
+  onOpenChange,
+}: ThemeSelectorDialogProps) {
   const { t } = useTranslation();
   const themeMode = useSettingsStore((state) => state.themeMode);
   const setThemeMode = useSettingsStore((state) => state.setThemeMode);
@@ -51,8 +66,9 @@ export const ThemeSelector = memo(function ThemeSelector() {
   const handleSelect = useCallback(
     (mode: ThemeMode) => {
       setThemeMode(mode);
+      onOpenChange(false);
     },
-    [setThemeMode]
+    [setThemeMode, onOpenChange]
   );
 
   const options = useMemo(
@@ -77,18 +93,32 @@ export const ThemeSelector = memo(function ThemeSelector() {
   );
 
   return (
-    <View className="bg-card rounded-xl mx-4 overflow-hidden">
-      {options.map((option, index) => (
-        <ThemeOption
-          key={option.mode}
-          mode={option.mode}
-          icon={option.icon}
-          label={option.label}
-          isSelected={themeMode === option.mode}
-          onPress={handleSelect}
-          isLast={index === options.length - 1}
-        />
-      ))}
-    </View>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent className="p-0 max-w-xs">
+        <AlertDialogHeader className="px-4 pt-4 pb-2">
+          <AlertDialogTitle className="text-center">
+            {t("settings.theme")}
+          </AlertDialogTitle>
+        </AlertDialogHeader>
+        <View>
+          {options.map((option, index) => (
+            <ThemeOption
+              key={option.mode}
+              mode={option.mode}
+              icon={option.icon}
+              label={option.label}
+              isSelected={themeMode === option.mode}
+              onPress={handleSelect}
+              isLast={index === options.length - 1}
+            />
+          ))}
+        </View>
+        <View className="p-4 pt-2">
+          <AlertDialogCancel>
+            <Text>{t("common.cancel")}</Text>
+          </AlertDialogCancel>
+        </View>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 });

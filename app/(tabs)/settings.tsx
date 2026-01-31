@@ -1,10 +1,9 @@
 import { useState, useCallback } from "react";
-import { View, ScrollView, Pressable } from "react-native";
-import { Text } from "@/components/ui/text";
+import { View, ScrollView } from "react-native";
 import { SettingsGroup } from "@/components/settings/SettingsGroup";
 import { SettingsRow } from "@/components/settings/SettingsRow";
-import { ThemeSelector } from "@/components/settings/ThemeSelector";
-import { LanguageSelector } from "@/components/settings/LanguageSelector";
+import { ThemeSelectorDialog } from "@/components/settings/ThemeSelector";
+import { LanguageSelectorDialog } from "@/components/settings/LanguageSelector";
 import { Radio, Sun, Moon, Monitor, Globe, Info } from "@/utils/icons";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { useTranslation } from "react-i18next";
@@ -16,8 +15,8 @@ export default function SettingsScreen() {
   const themeMode = useSettingsStore((state) => state.themeMode);
   const language = useSettingsStore((state) => state.language);
 
-  const [showThemeSelector, setShowThemeSelector] = useState(false);
-  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
+  const [themeDialogOpen, setThemeDialogOpen] = useState(false);
+  const [languageDialogOpen, setLanguageDialogOpen] = useState(false);
 
   const handleSourcesPress = useCallback(() => {
     router.push("/settings/sources");
@@ -27,14 +26,12 @@ export default function SettingsScreen() {
     router.push("/settings/about");
   }, [router]);
 
-  const toggleThemeSelector = useCallback(() => {
-    setShowThemeSelector((prev) => !prev);
-    setShowLanguageSelector(false);
+  const handleThemePress = useCallback(() => {
+    setThemeDialogOpen(true);
   }, []);
 
-  const toggleLanguageSelector = useCallback(() => {
-    setShowLanguageSelector((prev) => !prev);
-    setShowThemeSelector(false);
+  const handleLanguagePress = useCallback(() => {
+    setLanguageDialogOpen(true);
   }, []);
 
   const getThemeLabel = () => {
@@ -85,32 +82,18 @@ export default function SettingsScreen() {
             icon={getThemeIcon()}
             label={t("settings.theme")}
             value={getThemeLabel()}
-            onPress={toggleThemeSelector}
+            onPress={handleThemePress}
             accessibilityLabel={`${t("settings.theme")}, ${getThemeLabel()}`}
           />
           <SettingsRow
             icon={<Globe size={20} className="text-muted-foreground" />}
             label={t("settings.language")}
             value={getLanguageLabel()}
-            onPress={toggleLanguageSelector}
+            onPress={handleLanguagePress}
             accessibilityLabel={`${t("settings.language")}, ${getLanguageLabel()}`}
             isLast
           />
         </SettingsGroup>
-
-        {/* Theme Selector (expanded) */}
-        {showThemeSelector && (
-          <View className="mb-6">
-            <ThemeSelector />
-          </View>
-        )}
-
-        {/* Language Selector (expanded) */}
-        {showLanguageSelector && (
-          <View className="mb-6">
-            <LanguageSelector />
-          </View>
-        )}
 
         {/* About Section */}
         <SettingsGroup>
@@ -123,6 +106,18 @@ export default function SettingsScreen() {
           />
         </SettingsGroup>
       </View>
+
+      {/* Theme Selector Dialog */}
+      <ThemeSelectorDialog
+        open={themeDialogOpen}
+        onOpenChange={setThemeDialogOpen}
+      />
+
+      {/* Language Selector Dialog */}
+      <LanguageSelectorDialog
+        open={languageDialogOpen}
+        onOpenChange={setLanguageDialogOpen}
+      />
     </ScrollView>
   );
 }
