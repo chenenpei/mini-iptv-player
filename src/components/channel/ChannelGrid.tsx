@@ -79,20 +79,10 @@ const ChannelGridItem = memo(function ChannelGridItem({
       accessibilityHint={t("channel.playHint")}
     >
       <View className="bg-card rounded-xl p-3 items-center border border-border relative">
-        {/* Favorite Button */}
-        <Pressable
-          onPress={handleFavoritePress}
-          className="absolute top-1 right-1 p-1.5 min-h-8 min-w-8 items-center justify-center active:opacity-70 z-10"
-          accessibilityLabel={favoriteLabel}
-          accessibilityRole="button"
-          accessibilityState={{ selected: isFavorite }}
-        >
-          {isFavorite ? (
-            <Star size={16} fill="#eab308" className="text-yellow-500" />
-          ) : (
-            <Star size={16} className="text-muted-foreground" />
-          )}
-        </Pressable>
+        {/* Status Indicator - Top Left */}
+        <View className="absolute top-2 left-2 z-10">
+          <StatusIndicator status={status} />
+        </View>
 
         {/* Logo */}
         <View className="h-16 w-16 rounded-xl bg-muted items-center justify-center overflow-hidden mb-2">
@@ -116,10 +106,20 @@ const ChannelGridItem = memo(function ChannelGridItem({
           {channel.name}
         </Text>
 
-        {/* Status Indicator */}
-        <View className="mt-2">
-          <StatusIndicator status={status} />
-        </View>
+        {/* Favorite Button - Below Name */}
+        <Pressable
+          onPress={handleFavoritePress}
+          className="mt-1 p-1.5 min-h-8 min-w-8 items-center justify-center active:opacity-70"
+          accessibilityLabel={favoriteLabel}
+          accessibilityRole="button"
+          accessibilityState={{ selected: isFavorite }}
+        >
+          {isFavorite ? (
+            <Star size={18} fill="#eab308" className="text-yellow-500" />
+          ) : (
+            <Star size={18} className="text-muted-foreground" />
+          )}
+        </Pressable>
       </View>
     </Pressable>
   );

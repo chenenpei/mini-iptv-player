@@ -66,8 +66,11 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
       accessibilityRole="button"
       accessibilityHint={t("channel.playHint")}
     >
+      {/* Status Indicator */}
+      <StatusIndicator status={status} />
+
       {/* Logo */}
-      <View className="h-12 w-12 rounded-xl bg-muted items-center justify-center overflow-hidden">
+      <View className="h-12 w-12 rounded-xl bg-muted items-center justify-center overflow-hidden ml-3">
         {showLogo ? (
           <Image
             source={{ uri: channel.logo }}
@@ -109,9 +112,6 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
           <Star size={20} className="text-muted-foreground" />
         )}
       </Pressable>
-
-      {/* Status Indicator */}
-      <StatusIndicator status={status} />
     </Pressable>
   );
 });
