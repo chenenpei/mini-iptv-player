@@ -113,7 +113,8 @@ export const ControlBar = memo(function ControlBar({
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-    pointerEvents: opacity.value === 0 ? "none" : "auto",
+    // Use threshold to handle animation floating point values
+    pointerEvents: opacity.value < 0.1 ? "none" : "auto",
   }));
 
   const handlePlayPause = useCallback(() => {

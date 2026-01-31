@@ -196,3 +196,26 @@ IPTV 源大多使用 HTTP 协议，需要配置允许明文流量：
 - 动态样式对象使用 `useMemo`
 - 只动画 `transform` 和 `opacity` 属性
 - 详细指南见 [Tech-Stack.md](doc/Tech-Stack.md) 第 8 节
+
+## Known Issues
+
+### 频道状态自动检测已禁用（性能问题）
+
+**文件**: `src/hooks/useChannelStatus.ts`
+
+**问题**: 自动检测频道状态会严重阻塞 UI，导致：
+- 列表点击响应延迟
+- 播放器控件不灵敏
+- 整体交互卡顿
+
+**原因分析**:
+- 即使使用 HEAD 请求 + Range header，网络请求回调仍会阻塞 JS 主线程
+- 并发请求 + 频繁状态更新导致 React 重渲染
+
+**当前状态**: 已在 `useChannelStatusCheck` 中禁用自动检测
+
+**待解决方案**:
+- [ ] 使用原生模块在后台线程执行网络请求
+- [ ] 改为用户手动触发检测（如长按频道）
+- [ ] 仅在播放时检测当前频道状态
+- [ ] 使用 Web Worker（需要额外配置）

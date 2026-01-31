@@ -74,7 +74,34 @@ export function useChannels() {
   };
 }
 
+// Lightweight hook for player - no sorting to avoid expensive computation
+export function useChannelsForPlayer() {
+  const sources = useSourceStore((state) => state.sources);
+  const enabledSources = sources.filter((s) => s.enabled);
+
+  const query = useQuery({
+    queryKey: ["channels", enabledSources.map((s) => s.id)],
+    queryFn: () => fetchChannelsFromSources(enabledSources),
+    enabled: enabledSources.length > 0,
+    staleTime: 1000 * 60 * 10, // 10 minutes
+  });
+
+  // Return raw data without sorting (sorting is expensive with localeCompare)
+  return { channels: query.data ?? [] };
+}
+
+// Lightweight hook to get a single channel by ID (no sorting needed)
 export function useChannelById(channelId: string): Channel | undefined {
-  const { allChannels } = useChannels();
-  return allChannels.find((channel) => channel.id === channelId);
+  const sources = useSourceStore((state) => state.sources);
+  const enabledSources = sources.filter((s) => s.enabled);
+
+  const query = useQuery({
+    queryKey: ["channels", enabledSources.map((s) => s.id)],
+    queryFn: () => fetchChannelsFromSources(enabledSources),
+    enabled: enabledSources.length > 0,
+    staleTime: 1000 * 60 * 10,
+  });
+
+  // Direct lookup without sorting
+  return query.data?.find((channel) => channel.id === channelId);
 }

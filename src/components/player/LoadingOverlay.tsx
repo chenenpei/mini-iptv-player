@@ -17,6 +17,7 @@ export const LoadingOverlay = memo(function LoadingOverlay({
   return (
     <View
       className="absolute inset-0 items-center justify-center bg-black/60"
+      pointerEvents="none"
       accessibilityLabel={t("player.loading")}
       accessibilityRole="progressbar"
     >

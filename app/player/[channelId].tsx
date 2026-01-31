@@ -4,7 +4,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Text } from "@components/ui/text";
 import { VideoPlayer } from "@components/player";
 import { ChannelItem } from "@components/channel/ChannelItem";
-import { useChannelById, useChannels } from "@hooks/useChannels";
+import { useChannelById, useChannelsForPlayer } from "@hooks/useChannels";
 import { usePlayer } from "@hooks/usePlayer";
 import { useHistoryStore } from "@stores/useHistoryStore";
 import { useTranslation } from "react-i18next";
@@ -47,14 +47,23 @@ const PlayerChannelList = memo(function PlayerChannelList({
   currentChannelId,
   onChannelPress,
 }: PlayerChannelListProps) {
-  const { channels } = useChannels();
+  const { channels } = useChannelsForPlayer();
+  const [isReady, setIsReady] = useState(false);
+
+  // Defer list rendering to next frame
+  useEffect(() => {
+    const frameId = requestAnimationFrame(() => {
+      setIsReady(true);
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, []);
 
   const renderItem = useCallback(
     ({ item }: { item: Channel }) => (
       <View
         className={item.id === currentChannelId ? "bg-primary/10" : undefined}
       >
-        <ChannelItem channel={item} onPress={onChannelPress} />
+        <ChannelItem channel={item} onPress={onChannelPress} showFavorite={false} />
       </View>
     ),
     [currentChannelId, onChannelPress]
@@ -62,14 +71,20 @@ const PlayerChannelList = memo(function PlayerChannelList({
 
   const keyExtractor = useCallback((item: Channel) => item.id, []);
 
+  // Show nothing until ready (video player renders first)
+  if (!isReady) {
+    return <View className="flex-1" />;
+  }
+
   return (
     <FlatList
       data={channels}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       removeClippedSubviews={true}
-      maxToRenderPerBatch={10}
-      windowSize={5}
+      initialNumToRender={5}
+      maxToRenderPerBatch={5}
+      windowSize={3}
       className="flex-1"
     />
   );
@@ -79,7 +94,7 @@ export default function PlayerScreen() {
   const { channelId: initialChannelId } = useLocalSearchParams<{ channelId: string }>();
   const router = useRouter();
   const { t } = useTranslation();
-  const { channels } = useChannels();
+  const { channels } = useChannelsForPlayer();
 
   // Use local state for current channel to avoid page navigation on switch
   const [currentChannelId, setCurrentChannelId] = useState(initialChannelId || "");
@@ -134,8 +149,8 @@ export default function PlayerScreen() {
   // Record history when channel is played
   useEffect(() => {
     if (channel && historyRecordedRef.current !== channel.id) {
-      addHistory(channel);
       historyRecordedRef.current = channel.id;
+      addHistory(channel);
     }
   }, [channel, addHistory]);
 

@@ -173,15 +173,8 @@ export const VideoPlayer = memo(function VideoPlayer({
 
   return (
     <View style={containerStyle}>
-      {/* Video with touch handler */}
-      <Pressable
-        className="flex-1 bg-black"
-        onPress={handleVideoPress}
-        accessibilityLabel={
-          controlsVisible ? t("player.hideControls") : t("player.showControls")
-        }
-        accessibilityRole="button"
-      >
+      {/* Video layer */}
+      <View className="flex-1 bg-black">
         {!hasError && url && (
           <Video
             ref={videoRef}
@@ -205,7 +198,19 @@ export const VideoPlayer = memo(function VideoPlayer({
 
         {/* Error Overlay */}
         <ErrorOverlay visible={hasError} message={error} onRetry={onRetry} />
-      </Pressable>
+
+        {/* Touch layer - on top to capture taps */}
+        {!hasError && (
+          <Pressable
+            style={styles.touchLayer}
+            onPress={handleVideoPress}
+            accessibilityLabel={
+              controlsVisible ? t("player.hideControls") : t("player.showControls")
+            }
+            accessibilityRole="button"
+          />
+        )}
+      </View>
 
       {/* Control Bar */}
       <ControlBar
@@ -237,6 +242,9 @@ const styles = StyleSheet.create({
     aspectRatio: undefined,
   },
   video: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  touchLayer: {
     ...StyleSheet.absoluteFillObject,
   },
 });

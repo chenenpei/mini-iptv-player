@@ -166,6 +166,7 @@
 
 ### 任务清单
 
+- [ ] 修复频道状态检测性能问题（当前已禁用，需迁移到 native module 或 Web Worker）
 - [ ] 性能优化（列表虚拟化、图片懒加载）
 - [ ] 编写单元测试
 - [ ] 编写组件测试
@@ -184,6 +185,13 @@
 ## 变更日志
 
 ### 2026-01-31
+
+- **性能优化：播放器页面导航**
+  - 新增 `useChannelsForPlayer` 轻量 hook（跳过排序操作）
+  - 优化 `useChannelById` 直接从缓存查找（不调用排序）
+  - `ChannelItem` 添加 `showFavorite` 参数，播放器页面跳过收藏订阅
+  - 移除废弃的 `InteractionManager`，改用 `requestAnimationFrame`
+  - **已知问题**：频道状态检测暂时禁用（JS 线程阻塞导致 UI 卡顿），计划在 M6 迁移到 native module
 
 - **完成 M3：收藏与历史**
   - 创建 useFavoriteStore（收藏状态管理，MMKV 持久化）

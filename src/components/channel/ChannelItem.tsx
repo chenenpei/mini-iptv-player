@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 interface ChannelItemProps {
   channel: Channel;
   onPress: (channel: Channel) => void;
+  showFavorite?: boolean;
 }
 
 const statusTranslationKeys: Record<ChannelStatus, string> = {
@@ -21,7 +22,11 @@ const statusTranslationKeys: Record<ChannelStatus, string> = {
   unknown: "channel.statusUnknown",
 };
 
-export const ChannelItem = memo(function ChannelItem({ channel, onPress }: ChannelItemProps) {
+export const ChannelItem = memo(function ChannelItem({
+  channel,
+  onPress,
+  showFavorite = true,
+}: ChannelItemProps) {
   const { t } = useTranslation();
   const [imageError, setImageError] = useState(false);
 
@@ -30,9 +35,9 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
     (state) => state.statusMap[channel.id] ?? "unknown"
   ) as ChannelStatus;
 
-  // Favorite state
-  const isFavorite = useFavoriteStore(
-    (state) => state.favorites.some((c) => c.id === channel.id)
+  // Favorite state - only subscribe when needed
+  const isFavorite = useFavoriteStore((state) =>
+    showFavorite ? state.favorites.some((c) => c.id === channel.id) : false
   );
   const toggleFavorite = useFavoriteStore((state) => state.toggleFavorite);
 
@@ -99,19 +104,21 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
       </View>
 
       {/* Favorite Button */}
-      <Pressable
-        onPress={handleFavoritePress}
-        className="p-2 min-h-11 min-w-11 items-center justify-center active:opacity-70"
-        accessibilityLabel={favoriteLabel}
-        accessibilityRole="button"
-        accessibilityState={{ selected: isFavorite }}
-      >
-        {isFavorite ? (
-          <Star size={20} fill="#eab308" className="text-yellow-500" />
-        ) : (
-          <Star size={20} className="text-muted-foreground" />
-        )}
-      </Pressable>
+      {showFavorite && (
+        <Pressable
+          onPress={handleFavoritePress}
+          className="p-2 min-h-11 min-w-11 items-center justify-center active:opacity-70"
+          accessibilityLabel={favoriteLabel}
+          accessibilityRole="button"
+          accessibilityState={{ selected: isFavorite }}
+        >
+          {isFavorite ? (
+            <Star size={20} fill="#eab308" className="text-yellow-500" />
+          ) : (
+            <Star size={20} className="text-muted-foreground" />
+          )}
+        </Pressable>
+      )}
     </Pressable>
   );
 });
