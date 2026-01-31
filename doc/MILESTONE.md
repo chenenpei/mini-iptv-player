@@ -7,7 +7,7 @@
 | M0 | 项目初始化 | ✅ 已完成 | 2026-01-29 |
 | M1 | 频道管理 | ✅ 已完成 | 2026-01-30 |
 | M2 | 核心播放功能 | ✅ 已完成 | 2026-01-31 |
-| M3 | 收藏与历史 | 待开始 | - |
+| M3 | 收藏与历史 | ✅ 已完成 | 2026-01-31 |
 | M4 | 设置与个性化 | 待开始 | - |
 | M5 | 高级功能 | 待开始 | - |
 | M6 | 优化与发布 | 待开始 | - |
@@ -101,13 +101,13 @@
 
 ### 任务清单
 
-- [ ] 实现收藏 Store（useFavoriteStore）
-- [ ] 实现历史 Store（useHistoryStore）
-- [ ] 实现收藏/取消收藏功能
-- [ ] 实现收藏页面
-- [ ] 实现播放历史记录
-- [ ] 实现历史页面
-- [ ] 实现空状态 UI
+- [x] 实现收藏 Store（useFavoriteStore）
+- [x] 实现历史 Store（useHistoryStore）
+- [x] 实现收藏/取消收藏功能
+- [x] 实现收藏页面
+- [x] 实现播放历史记录
+- [x] 实现历史页面
+- [x] 实现空状态 UI
 
 ### 交付物
 
@@ -184,6 +184,16 @@
 ## 变更日志
 
 ### 2026-01-31
+
+- **完成 M3：收藏与历史**
+  - 创建 useFavoriteStore（收藏状态管理，MMKV 持久化）
+  - 创建 useHistoryStore（历史记录管理，最多 100 条，MMKV 持久化）
+  - 添加 AlertDialog UI 组件（@rn-primitives/alert-dialog + @rn-primitives/portal）
+  - 实现收藏页面（搜索、清空确认弹窗、频道列表）
+  - 实现历史页面（按日期分组、相对时间显示、搜索、清空确认弹窗）
+  - ChannelItem/ChannelGrid 添加收藏星标按钮
+  - 播放器自动记录播放历史
+  - 补充收藏/历史相关 i18n 翻译（中/英文）
 
 - **完成 M2：核心播放功能**
   - 集成 react-native-video 和 expo-screen-orientation
