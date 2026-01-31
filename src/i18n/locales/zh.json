@@ -56,7 +56,8 @@
     "emptyHint": "在频道列表中点击星标收藏",
     "clear": "清空",
     "clearConfirm": "确定清空所有收藏？",
-    "search": "搜索收藏..."
+    "search": "搜索收藏...",
+    "sortByAdded": "添加时间"
   },
   "history": {
     "title": "历史",
@@ -69,7 +70,8 @@
     "yesterday": "昨天",
     "justNow": "刚刚",
     "minutesAgo": "{{count}}分钟前",
-    "hoursAgo": "{{count}}小时前"
+    "hoursAgo": "{{count}}小时前",
+    "sortByTime": "时间"
   },
   "settings": {
     "title": "设置",

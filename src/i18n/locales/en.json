@@ -56,7 +56,8 @@
     "emptyHint": "Tap the star icon in channel list to add favorites",
     "clear": "Clear",
     "clearConfirm": "Are you sure you want to clear all favorites?",
-    "search": "Search favorites..."
+    "search": "Search favorites...",
+    "sortByAdded": "Added"
   },
   "history": {
     "title": "History",
@@ -69,7 +70,8 @@
     "yesterday": "Yesterday",
     "justNow": "Just now",
     "minutesAgo": "{{count}} min ago",
-    "hoursAgo": "{{count}} hr ago"
+    "hoursAgo": "{{count}} hr ago",
+    "sortByTime": "Time"
   },
   "settings": {
     "title": "Settings",

@@ -16,9 +16,11 @@ import {
 import { ChannelItem } from "@/components/channel/ChannelItem";
 import { useFavoriteStore } from "@/stores/useFavoriteStore";
 import { useTranslation } from "react-i18next";
-import { Star, Search, X, Trash2 } from "@/utils/icons";
+import { Star, Search, X, Trash2, ChevronDown } from "@/utils/icons";
 import { useRouter } from "expo-router";
 import type { Channel } from "@/types/channel";
+
+type SortBy = "name" | "added";
 
 function EmptyState() {
   const { t } = useTranslation();
@@ -56,21 +58,46 @@ export default function FavoritesScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<SortBy>("added");
 
   const favorites = useFavoriteStore((state) => state.favorites);
   const clearFavorites = useFavoriteStore((state) => state.clearFavorites);
 
-  const filteredFavorites = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return favorites;
+  const sortOptions: { value: SortBy; label: string }[] = [
+    { value: "added", label: t("favorites.sortByAdded") },
+    { value: "name", label: t("channel.sortByName") },
+  ];
+
+  const currentSortLabel =
+    sortOptions.find((opt) => opt.value === sortBy)?.label ?? "";
+
+  const handleSortPress = () => {
+    const currentIndex = sortOptions.findIndex((opt) => opt.value === sortBy);
+    const nextIndex = (currentIndex + 1) % sortOptions.length;
+    setSortBy(sortOptions[nextIndex].value);
+  };
+
+  const filteredAndSortedFavorites = useMemo(() => {
+    let result = [...favorites];
+
+    // Filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (channel) =>
+          channel.name.toLowerCase().includes(query) ||
+          channel.tvgName?.toLowerCase().includes(query)
+      );
     }
-    const query = searchQuery.toLowerCase();
-    return favorites.filter(
-      (channel) =>
-        channel.name.toLowerCase().includes(query) ||
-        channel.tvgName?.toLowerCase().includes(query)
-    );
-  }, [favorites, searchQuery]);
+
+    // Sort
+    if (sortBy === "name") {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    // "added" keeps original order (most recent first)
+
+    return result;
+  }, [favorites, searchQuery, sortBy]);
 
   const handleChannelPress = useCallback(
     (channel: Channel) => {
@@ -102,9 +129,48 @@ export default function FavoritesScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      {/* Header with clear button */}
-      <View className="flex-row items-center justify-between px-4 pt-4 pb-2">
-        <Text className="text-lg font-semibold">{t("favorites.title")}</Text>
+      {/* Search bar */}
+      <View className="px-4 pt-4 pb-2">
+        <View className="flex-row items-center bg-muted rounded-lg px-3">
+          <Search size={24} className="text-muted-foreground" />
+          <Input
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder={t("favorites.search")}
+            className="flex-1 border-0 bg-transparent"
+            accessibilityLabel={t("favorites.search")}
+            accessibilityRole="search"
+          />
+          {searchQuery.length > 0 && (
+            <Pressable
+              onPress={() => setSearchQuery("")}
+              className="min-h-11 min-w-11 items-center justify-center active:opacity-70"
+              accessibilityLabel={t("common.clear")}
+              accessibilityRole="button"
+            >
+              <X size={24} className="text-muted-foreground" />
+            </Pressable>
+          )}
+        </View>
+      </View>
+
+      {/* Toolbar: Sort + Clear */}
+      <View className="flex-row items-center justify-between px-4 py-2 border-b border-border">
+        {/* Sort Button */}
+        <Pressable
+          onPress={handleSortPress}
+          className="flex-row items-center min-h-11 active:opacity-70"
+          accessibilityLabel={`${t("channel.sortLabel")} ${currentSortLabel}`}
+          accessibilityRole="button"
+        >
+          <Text className="text-sm text-muted-foreground mr-1">
+            {t("channel.sortLabel")}
+          </Text>
+          <Text className="text-sm">{currentSortLabel}</Text>
+          <ChevronDown size={24} className="text-muted-foreground ml-1" />
+        </Pressable>
+
+        {/* Clear Button */}
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Pressable
@@ -142,37 +208,12 @@ export default function FavoritesScreen() {
         </AlertDialog>
       </View>
 
-      {/* Search bar */}
-      <View className="px-4 pb-2">
-        <View className="flex-row items-center bg-muted rounded-lg px-3">
-          <Search size={24} className="text-muted-foreground" />
-          <Input
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder={t("favorites.search")}
-            className="flex-1 border-0 bg-transparent"
-            accessibilityLabel={t("favorites.search")}
-            accessibilityRole="search"
-          />
-          {searchQuery.length > 0 && (
-            <Pressable
-              onPress={() => setSearchQuery("")}
-              className="min-h-11 min-w-11 items-center justify-center active:opacity-70"
-              accessibilityLabel={t("common.clear")}
-              accessibilityRole="button"
-            >
-              <X size={24} className="text-muted-foreground" />
-            </Pressable>
-          )}
-        </View>
-      </View>
-
       {/* Channel list or no results */}
-      {filteredFavorites.length === 0 ? (
+      {filteredAndSortedFavorites.length === 0 ? (
         <NoResultsState />
       ) : (
         <FlatList
-          data={filteredFavorites}
+          data={filteredAndSortedFavorites}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           removeClippedSubviews={true}

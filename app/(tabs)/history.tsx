@@ -16,9 +16,11 @@ import {
 import { ChannelItem } from "@/components/channel/ChannelItem";
 import { useHistoryStore, type HistoryRecord } from "@/stores/useHistoryStore";
 import { useTranslation } from "react-i18next";
-import { Clock, Search, X, Trash2 } from "@/utils/icons";
+import { Clock, Search, X, Trash2, ChevronDown } from "@/utils/icons";
 import { useRouter } from "expo-router";
 import type { Channel } from "@/types/channel";
+
+type SortBy = "time" | "name";
 
 function EmptyState() {
   const { t } = useTranslation();
@@ -111,9 +113,24 @@ export default function HistoryScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<SortBy>("time");
 
   const history = useHistoryStore((state) => state.history);
   const clearHistory = useHistoryStore((state) => state.clearHistory);
+
+  const sortOptions: { value: SortBy; label: string }[] = [
+    { value: "time", label: t("history.sortByTime") },
+    { value: "name", label: t("channel.sortByName") },
+  ];
+
+  const currentSortLabel =
+    sortOptions.find((opt) => opt.value === sortBy)?.label ?? "";
+
+  const handleSortPress = () => {
+    const currentIndex = sortOptions.findIndex((opt) => opt.value === sortBy);
+    const nextIndex = (currentIndex + 1) % sortOptions.length;
+    setSortBy(sortOptions[nextIndex].value);
+  };
 
   const filteredHistory = useMemo(() => {
     if (!searchQuery.trim()) {
@@ -128,6 +145,16 @@ export default function HistoryScreen() {
   }, [history, searchQuery]);
 
   const sections = useMemo<HistorySection[]>(() => {
+    // Sort by name: single section with alphabetically sorted items
+    if (sortBy === "name") {
+      const sorted = [...filteredHistory].sort((a, b) =>
+        a.channel.name.localeCompare(b.channel.name)
+      );
+      if (sorted.length === 0) return [];
+      return [{ title: t("channel.sortByName"), data: sorted }];
+    }
+
+    // Sort by time: group by date
     const todayRecords: HistoryRecord[] = [];
     const yesterdayRecords: HistoryRecord[] = [];
     const olderRecords: Map<string, HistoryRecord[]> = new Map();
@@ -159,7 +186,7 @@ export default function HistoryScreen() {
     }
 
     return result;
-  }, [filteredHistory, t]);
+  }, [filteredHistory, sortBy, t]);
 
   const handleChannelPress = useCallback(
     (channel: Channel) => {
@@ -212,9 +239,48 @@ export default function HistoryScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      {/* Header with clear button */}
-      <View className="flex-row items-center justify-between px-4 pt-4 pb-2">
-        <Text className="text-lg font-semibold">{t("history.title")}</Text>
+      {/* Search bar */}
+      <View className="px-4 pt-4 pb-2">
+        <View className="flex-row items-center bg-muted rounded-lg px-3">
+          <Search size={24} className="text-muted-foreground" />
+          <Input
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder={t("history.search")}
+            className="flex-1 border-0 bg-transparent"
+            accessibilityLabel={t("history.search")}
+            accessibilityRole="search"
+          />
+          {searchQuery.length > 0 && (
+            <Pressable
+              onPress={() => setSearchQuery("")}
+              className="min-h-11 min-w-11 items-center justify-center active:opacity-70"
+              accessibilityLabel={t("common.clear")}
+              accessibilityRole="button"
+            >
+              <X size={24} className="text-muted-foreground" />
+            </Pressable>
+          )}
+        </View>
+      </View>
+
+      {/* Toolbar: Sort + Clear */}
+      <View className="flex-row items-center justify-between px-4 py-2 border-b border-border">
+        {/* Sort Button */}
+        <Pressable
+          onPress={handleSortPress}
+          className="flex-row items-center min-h-11 active:opacity-70"
+          accessibilityLabel={`${t("channel.sortLabel")} ${currentSortLabel}`}
+          accessibilityRole="button"
+        >
+          <Text className="text-sm text-muted-foreground mr-1">
+            {t("channel.sortLabel")}
+          </Text>
+          <Text className="text-sm">{currentSortLabel}</Text>
+          <ChevronDown size={24} className="text-muted-foreground ml-1" />
+        </Pressable>
+
+        {/* Clear Button */}
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Pressable
@@ -250,31 +316,6 @@ export default function HistoryScreen() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </View>
-
-      {/* Search bar */}
-      <View className="px-4 pb-2">
-        <View className="flex-row items-center bg-muted rounded-lg px-3">
-          <Search size={24} className="text-muted-foreground" />
-          <Input
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder={t("history.search")}
-            className="flex-1 border-0 bg-transparent"
-            accessibilityLabel={t("history.search")}
-            accessibilityRole="search"
-          />
-          {searchQuery.length > 0 && (
-            <Pressable
-              onPress={() => setSearchQuery("")}
-              className="min-h-11 min-w-11 items-center justify-center active:opacity-70"
-              accessibilityLabel={t("common.clear")}
-              accessibilityRole="button"
-            >
-              <X size={24} className="text-muted-foreground" />
-            </Pressable>
-          )}
-        </View>
       </View>
 
       {/* History list or no results */}
