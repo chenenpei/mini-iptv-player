@@ -78,6 +78,17 @@
   },
   "player": {
     "loading": "Loading...",
-    "error": "Playback failed"
+    "error": "Playback failed",
+    "errorHint": "Please try another channel or check your network connection",
+    "retry": "Retry",
+    "retryHint": "Tap to reload video",
+    "play": "Play",
+    "pause": "Pause",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "noChannel": "Channel not found",
+    "goBack": "Go back"
   }
 }
