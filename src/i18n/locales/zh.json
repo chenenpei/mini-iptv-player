@@ -46,17 +46,30 @@
     "statusUnavailable": "不可用",
     "statusUnknown": "未检测",
     "expandHint": "点击展开分组",
-    "collapseHint": "点击折叠分组"
+    "collapseHint": "点击折叠分组",
+    "addFavorite": "添加到收藏",
+    "removeFavorite": "取消收藏"
   },
   "favorites": {
     "title": "收藏",
     "empty": "暂无收藏频道",
-    "emptyHint": "在频道列表中点击星标收藏"
+    "emptyHint": "在频道列表中点击星标收藏",
+    "clear": "清空",
+    "clearConfirm": "确定清空所有收藏？",
+    "search": "搜索收藏..."
   },
   "history": {
     "title": "历史",
     "empty": "暂无播放记录",
-    "emptyHint": "观看频道后将在此显示"
+    "emptyHint": "观看频道后将在此显示",
+    "clear": "清空",
+    "clearConfirm": "确定清空所有历史记录？",
+    "search": "搜索历史...",
+    "today": "今天",
+    "yesterday": "昨天",
+    "justNow": "刚刚",
+    "minutesAgo": "{{count}}分钟前",
+    "hoursAgo": "{{count}}小时前"
   },
   "settings": {
     "title": "设置",

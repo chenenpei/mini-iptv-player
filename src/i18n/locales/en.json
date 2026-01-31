@@ -46,17 +46,30 @@
     "statusUnavailable": "Unavailable",
     "statusUnknown": "Unknown",
     "expandHint": "Tap to expand group",
-    "collapseHint": "Tap to collapse group"
+    "collapseHint": "Tap to collapse group",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites"
   },
   "favorites": {
     "title": "Favorites",
     "empty": "No favorites yet",
-    "emptyHint": "Tap the star icon in channel list to add favorites"
+    "emptyHint": "Tap the star icon in channel list to add favorites",
+    "clear": "Clear",
+    "clearConfirm": "Are you sure you want to clear all favorites?",
+    "search": "Search favorites..."
   },
   "history": {
     "title": "History",
     "empty": "No watch history",
-    "emptyHint": "Channels you watch will appear here"
+    "emptyHint": "Channels you watch will appear here",
+    "clear": "Clear",
+    "clearConfirm": "Are you sure you want to clear all history?",
+    "search": "Search history...",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}} min ago",
+    "hoursAgo": "{{count}} hr ago"
   },
   "settings": {
     "title": "Settings",
