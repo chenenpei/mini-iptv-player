@@ -192,7 +192,10 @@ export function ChannelList({ onChannelPress }: ChannelListProps) {
       if (onChannelPress) {
         onChannelPress(channel);
       } else {
-        router.push(`/player/${channel.id}`);
+        router.push({
+          pathname: "/player/[channelId]",
+          params: { channelId: channel.id },
+        });
       }
     },
     [onChannelPress, router]

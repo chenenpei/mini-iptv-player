@@ -69,6 +69,7 @@ function RootLayoutNav() {
       <StatusBar style={isDark ? "light" : "dark"} />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="player/[channelId]" options={{ headerShown: true }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

@@ -22,10 +22,13 @@ import {
   Circle,
   Tv,
   AlertTriangle,
+  AlertCircle,
   RefreshCw,
+  RotateCcw,
   List,
   LayoutGrid,
   Clock,
+  ArrowLeft,
   type LucideIcon,
 } from "lucide-react-native";
 
@@ -53,10 +56,13 @@ const icons: LucideIcon[] = [
   Circle,
   Tv,
   AlertTriangle,
+  AlertCircle,
   RefreshCw,
+  RotateCcw,
   List,
   LayoutGrid,
   Clock,
+  ArrowLeft,
 ];
 
 for (const Icon of icons) {
@@ -94,8 +100,11 @@ export {
   Circle,
   Tv,
   AlertTriangle,
+  AlertCircle,
   RefreshCw,
+  RotateCcw,
   List,
   LayoutGrid,
   Clock,
+  ArrowLeft,
 };
