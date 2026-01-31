@@ -5,7 +5,7 @@ export default function SettingsLayout() {
   const { t } = useTranslation();
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerShadowVisible: false }}>
       <Stack.Screen
         name="sources/index"
         options={{

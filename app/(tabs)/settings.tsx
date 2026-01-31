@@ -64,7 +64,7 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView className="flex-1 bg-background">
-      <View className="pt-4">
+      <View className="pt-4 pb-4">
         {/* IPTV Sources Section */}
         <SettingsGroup>
           <SettingsRow
@@ -77,7 +77,7 @@ export default function SettingsScreen() {
         </SettingsGroup>
 
         {/* Appearance Section */}
-        <SettingsGroup title={t("settings.appearance")}>
+        <SettingsGroup>
           <SettingsRow
             icon={getThemeIcon()}
             label={t("settings.theme")}

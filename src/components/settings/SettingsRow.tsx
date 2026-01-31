@@ -26,11 +26,7 @@ export const SettingsRow = memo(function SettingsRow({
   isLast = false,
 }: SettingsRowProps) {
   const content = (
-    <View
-      className={`flex-row items-center px-4 py-3 min-h-12 ${
-        !isLast ? "border-b border-border" : ""
-      }`}
-    >
+    <View className="flex-row items-center px-4 py-4 min-h-14">
       {icon && <View className="mr-3">{icon}</View>}
       <Text className="flex-1 text-base text-foreground">{label}</Text>
       {value && (

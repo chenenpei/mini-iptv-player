@@ -13,8 +13,9 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useThemeMode } from "@/hooks/useThemeMode";
+import { colorScheme as nativeWindColorScheme } from "nativewind";
 import "react-native-reanimated";
 
 export { ErrorBoundary } from "expo-router";
@@ -39,6 +40,11 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isDark } = useThemeMode();
+
+  // Sync NativeWind color scheme with app theme
+  useLayoutEffect(() => {
+    nativeWindColorScheme.set(isDark ? "dark" : "light");
+  }, [isDark]);
 
   const customDarkTheme = {
     ...DarkTheme,
