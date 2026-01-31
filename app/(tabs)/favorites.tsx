@@ -193,15 +193,10 @@ export default function FavoritesScreen() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>
-                <Text>{t("common.cancel")}</Text>
+                <Text className="text-muted-foreground">{t("common.cancel")}</Text>
               </AlertDialogCancel>
-              <AlertDialogAction
-                onPress={clearFavorites}
-                className="bg-destructive"
-              >
-                <Text className="text-destructive-foreground">
-                  {t("common.confirm")}
-                </Text>
+              <AlertDialogAction onPress={clearFavorites}>
+                <Text className="text-destructive">{t("common.confirm")}</Text>
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

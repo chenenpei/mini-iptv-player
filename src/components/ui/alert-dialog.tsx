@@ -52,7 +52,7 @@ const AlertDialogContent = React.forwardRef<
         <AlertDialogPrimitive.Content
           ref={ref}
           className={cn(
-            "z-50 max-w-lg gap-4 rounded-lg border border-border bg-background p-6 shadow-lg web:duration-200",
+            "z-50 w-72 gap-4 rounded-2xl bg-background p-6 shadow-lg web:duration-200",
             open
               ? "web:animate-in web:fade-in-0 web:zoom-in-95"
               : "web:animate-out web:fade-out-0 web:zoom-out-95",
@@ -82,7 +82,7 @@ const AlertDialogFooter = ({
 }: React.ComponentPropsWithoutRef<typeof View>) => (
   <View
     className={cn(
-      "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
+      "flex flex-row justify-end gap-2",
       className
     )}
     {...props}
@@ -122,11 +122,11 @@ const AlertDialogAction = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Action>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
 >(({ className, ...props }, ref) => (
-  <TextClassContext.Provider value={buttonTextVariants({ className: "web:pointer-events-none" })}>
+  <TextClassContext.Provider value={buttonTextVariants({ className: "web:pointer-events-none font-medium" })}>
     <AlertDialogPrimitive.Action
       ref={ref}
       className={cn(
-        "group flex items-center justify-center rounded-md bg-primary px-4 py-2 native:h-12 native:px-5 native:py-3 web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:hover:opacity-90 active:opacity-90",
+        "group flex items-center justify-center px-4 py-2 active:opacity-70",
         className
       )}
       {...props}
@@ -140,12 +140,12 @@ const AlertDialogCancel = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
 >(({ className, ...props }, ref) => (
   <TextClassContext.Provider
-    value={buttonTextVariants({ variant: "outline", className: "web:pointer-events-none" })}
+    value={buttonTextVariants({ variant: "outline", className: "web:pointer-events-none font-medium" })}
   >
     <AlertDialogPrimitive.Cancel
       ref={ref}
       className={cn(
-        "group flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 native:h-12 native:px-5 native:py-3 web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent",
+        "group flex items-center justify-center px-4 py-2 active:opacity-70",
         className
       )}
       {...props}

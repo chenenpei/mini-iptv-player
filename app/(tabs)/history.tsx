@@ -303,15 +303,10 @@ export default function HistoryScreen() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>
-                <Text>{t("common.cancel")}</Text>
+                <Text className="text-muted-foreground">{t("common.cancel")}</Text>
               </AlertDialogCancel>
-              <AlertDialogAction
-                onPress={clearHistory}
-                className="bg-destructive"
-              >
-                <Text className="text-destructive-foreground">
-                  {t("common.confirm")}
-                </Text>
+              <AlertDialogAction onPress={clearHistory}>
+                <Text className="text-destructive">{t("common.confirm")}</Text>
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
