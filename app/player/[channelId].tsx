@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { View, Pressable, FlatList, BackHandler } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Text } from "@components/ui/text";
@@ -76,10 +76,13 @@ const PlayerChannelList = memo(function PlayerChannelList({
 });
 
 export default function PlayerScreen() {
-  const { channelId } = useLocalSearchParams<{ channelId: string }>();
+  const { channelId: initialChannelId } = useLocalSearchParams<{ channelId: string }>();
   const router = useRouter();
   const { t } = useTranslation();
-  const channel = useChannelById(channelId || "");
+
+  // Use local state for current channel to avoid page navigation on switch
+  const [currentChannelId, setCurrentChannelId] = useState(initialChannelId || "");
+  const channel = useChannelById(currentChannelId);
 
   const {
     isPlaying,
@@ -95,7 +98,7 @@ export default function PlayerScreen() {
     handleMuteToggle,
     handleFullscreenToggle,
     exitFullscreen,
-  } = usePlayer(channelId || "", channel?.url || "");
+  } = usePlayer(currentChannelId, channel?.url || "");
 
   // Handle back button to exit fullscreen first
   useEffect(() => {
@@ -115,14 +118,11 @@ export default function PlayerScreen() {
 
   const handleChannelPress = useCallback(
     (newChannel: Channel) => {
-      if (newChannel.id !== channelId) {
-        router.replace({
-          pathname: "/player/[channelId]",
-          params: { channelId: newChannel.id },
-        });
+      if (newChannel.id !== currentChannelId) {
+        setCurrentChannelId(newChannel.id);
       }
     },
-    [channelId, router]
+    [currentChannelId]
   );
 
   const handleGoBack = useCallback(() => {
@@ -226,7 +226,7 @@ export default function PlayerScreen() {
 
         {/* Channel List */}
         <PlayerChannelList
-          currentChannelId={channelId || ""}
+          currentChannelId={currentChannelId}
           onChannelPress={handleChannelPress}
         />
       </View>
