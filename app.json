@@ -23,7 +23,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.miniiptvplayer"
+      "package": "com.anonymous.miniiptvplayer",
+      "versionCode": 1
     },
     "web": {
       "bundler": "metro",
