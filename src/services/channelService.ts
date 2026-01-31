@@ -2,6 +2,9 @@ import type { Channel, ChannelGroup } from "@/types/channel";
 import type { Source } from "@/types/source";
 import { parseM3U } from "./m3uParser";
 
+// Pre-create collator for much faster sorting (10x+ faster than localeCompare)
+const zhCollator = new Intl.Collator("zh-CN");
+
 export async function fetchChannelsFromSource(
   source: Source
 ): Promise<Channel[]> {
@@ -46,7 +49,7 @@ export function groupChannels(channels: Channel[]): ChannelGroup[] {
   const sortedGroups = Array.from(groupMap.keys()).sort((a, b) => {
     if (a === "Other") return 1;
     if (b === "Other") return -1;
-    return a.localeCompare(b, "zh-CN");
+    return zhCollator.compare(a, b);
   });
 
   return sortedGroups.map((name) => ({
@@ -78,11 +81,11 @@ export function sortChannels(
 ): Channel[] {
   return [...channels].sort((a, b) => {
     if (sortBy === "name") {
-      return a.name.localeCompare(b.name, "zh-CN");
+      return zhCollator.compare(a.name, b.name);
     }
     // Sort by group first, then by name
-    const groupCompare = a.group.localeCompare(b.group, "zh-CN");
+    const groupCompare = zhCollator.compare(a.group, b.group);
     if (groupCompare !== 0) return groupCompare;
-    return a.name.localeCompare(b.name, "zh-CN");
+    return zhCollator.compare(a.name, b.name);
   });
 }

@@ -1,5 +1,5 @@
-import { memo, useCallback } from "react";
-import { View, ActivityIndicator, Pressable, FlatList } from "react-native";
+import { memo, useCallback, useMemo } from "react";
+import { View, ActivityIndicator, Pressable, SectionList } from "react-native";
 import { Text } from "@components/ui/text";
 import { ChannelItem } from "./ChannelItem";
 import { ChannelGrid } from "./ChannelGrid";
@@ -9,8 +9,15 @@ import { useChannels } from "@hooks/useChannels";
 import { useChannelStore } from "@stores/useChannelStore";
 import { useTranslation } from "react-i18next";
 import { Tv, AlertTriangle, RefreshCw, Search, ChevronDown, ChevronRight } from "@utils/icons";
-import type { Channel, ChannelGroup as ChannelGroupType } from "@/types/channel";
+import type { Channel } from "@/types/channel";
 import { useRouter } from "expo-router";
+
+// SectionList data type
+interface ChannelSection {
+  title: string;
+  data: Channel[];
+  channelCount: number; // Total count for display (even when collapsed)
+}
 
 interface ChannelListProps {
   onChannelPress?: (channel: Channel) => void;
@@ -99,30 +106,28 @@ function NoResultsState() {
   );
 }
 
-// Group header component
-interface GroupHeaderProps {
-  groupName: string;
-  channelCount: number;
+// Section header component for SectionList
+interface SectionHeaderProps {
+  section: ChannelSection;
 }
 
-const GroupHeader = memo(function GroupHeader({
-  groupName,
-  channelCount,
-}: GroupHeaderProps) {
+const SectionHeader = memo(function SectionHeader({
+  section,
+}: SectionHeaderProps) {
   const { t } = useTranslation();
   const isCollapsed = useChannelStore((state) =>
-    state.collapsedGroups.has(groupName)
+    state.collapsedGroups.has(section.title)
   );
   const toggleGroupCollapsed = useChannelStore(
     (state) => state.toggleGroupCollapsed
   );
 
-  const groupLabel = t("channel.groupLabel", { name: groupName, count: channelCount });
+  const groupLabel = t("channel.groupLabel", { name: section.title, count: section.channelCount });
   const stateLabel = isCollapsed ? t("channel.groupCollapsed") : t("channel.groupExpanded");
 
   return (
     <Pressable
-      onPress={() => toggleGroupCollapsed(groupName)}
+      onPress={() => toggleGroupCollapsed(section.title)}
       className="flex-row items-center justify-between px-4 py-3 bg-muted/30 active:bg-muted/50 border-b border-border"
       accessibilityLabel={`${groupLabel}, ${stateLabel}`}
       accessibilityRole="button"
@@ -135,49 +140,17 @@ const GroupHeader = memo(function GroupHeader({
         ) : (
           <ChevronDown size={24} className="text-muted-foreground mr-2" />
         )}
-        <Text className="text-base font-semibold">{groupName}</Text>
+        <Text className="text-base font-semibold">{section.title}</Text>
       </View>
-      <Text className="text-sm text-muted-foreground">({channelCount})</Text>
+      <Text className="text-sm text-muted-foreground">({section.channelCount})</Text>
     </Pressable>
-  );
-});
-
-// Group channels component (collapsible)
-interface GroupChannelsProps {
-  groupName: string;
-  channels: Channel[];
-  onChannelPress: (channel: Channel) => void;
-}
-
-const GroupChannels = memo(function GroupChannels({
-  groupName,
-  channels,
-  onChannelPress,
-}: GroupChannelsProps) {
-  const isCollapsed = useChannelStore((state) =>
-    state.collapsedGroups.has(groupName)
-  );
-
-  if (isCollapsed) {
-    return null;
-  }
-
-  return (
-    <View>
-      {channels.map((channel) => (
-        <ChannelItem
-          key={channel.id}
-          channel={channel}
-          onPress={onChannelPress}
-        />
-      ))}
-    </View>
   );
 });
 
 export function ChannelList({ onChannelPress }: ChannelListProps) {
   const router = useRouter();
   const layoutMode = useChannelStore((state) => state.layoutMode);
+  const collapsedGroups = useChannelStore((state) => state.collapsedGroups);
   const {
     groupedChannels,
     channels,
@@ -201,27 +174,31 @@ export function ChannelList({ onChannelPress }: ChannelListProps) {
     [onChannelPress, router]
   );
 
-  const renderGroup = useCallback(
-    ({ item: group }: { item: ChannelGroupType }) => (
-      <View>
-        <GroupHeader
-          groupName={group.name}
-          channelCount={group.channels.length}
-        />
-        <GroupChannels
-          groupName={group.name}
-          channels={group.channels}
-          onChannelPress={handleChannelPress}
-        />
-      </View>
+  // Convert grouped channels to SectionList format with collapse support
+  const sections: ChannelSection[] = useMemo(() => {
+    return groupedChannels.map((group) => ({
+      title: group.name,
+      // Empty data array when collapsed - SectionList won't render items
+      data: collapsedGroups.has(group.name) ? [] : group.channels,
+      channelCount: group.channels.length,
+    }));
+  }, [groupedChannels, collapsedGroups]);
+
+  const renderItem = useCallback(
+    ({ item }: { item: Channel }) => (
+      <ChannelItem channel={item} onPress={handleChannelPress} />
     ),
     [handleChannelPress]
   );
 
-  const keyExtractor = useCallback(
-    (item: ChannelGroupType) => item.name,
+  const renderSectionHeader = useCallback(
+    ({ section }: { section: ChannelSection }) => (
+      <SectionHeader section={section} />
+    ),
     []
   );
+
+  const keyExtractor = useCallback((item: Channel) => item.id, []);
 
   // Loading state
   if (isLoading) {
@@ -275,13 +252,21 @@ export function ChannelList({ onChannelPress }: ChannelListProps) {
       {layoutMode === "grid" ? (
         <ChannelGrid channels={channels} onChannelPress={handleChannelPress} />
       ) : (
-        <FlatList
-          data={groupedChannels}
-          renderItem={renderGroup}
+        <SectionList
+          sections={sections}
+          renderItem={renderItem}
+          renderSectionHeader={renderSectionHeader}
           keyExtractor={keyExtractor}
+          stickySectionHeadersEnabled={false}
           removeClippedSubviews={true}
-          maxToRenderPerBatch={10}
+          maxToRenderPerBatch={15}
           windowSize={5}
+          initialNumToRender={20}
+          getItemLayout={(_, index) => ({
+            length: 64, // Approximate height of ChannelItem
+            offset: 64 * index,
+            index,
+          })}
         />
       )}
     </View>

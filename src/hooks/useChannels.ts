@@ -6,8 +6,11 @@ import {
   filterChannels,
 } from "@services/channelService";
 import { useChannelStore } from "@stores/useChannelStore";
-import { useMemo } from "react";
+import { useMemo, useDeferredValue } from "react";
 import type { Channel, ChannelStatus } from "@/types/channel";
+
+// Pre-create collator for much faster sorting (10x+ faster than localeCompare)
+const zhCollator = new Intl.Collator("zh-CN");
 
 function sortChannelsByStatus(
   channels: Channel[],
@@ -24,12 +27,12 @@ function sortChannelsByStatus(
     const statusB = statusMap[b.id] ?? "unknown";
     const orderDiff = statusOrder[statusA] - statusOrder[statusB];
     if (orderDiff !== 0) return orderDiff;
-    return a.name.localeCompare(b.name, "zh-CN");
+    return zhCollator.compare(a.name, b.name);
   });
 }
 
 function sortChannelsByName(channels: Channel[]): Channel[] {
-  return [...channels].sort((a, b) => a.name.localeCompare(b.name, "zh-CN"));
+  return [...channels].sort((a, b) => zhCollator.compare(a.name, b.name));
 }
 
 export function useChannels() {
@@ -38,6 +41,9 @@ export function useChannels() {
   const searchQuery = useChannelStore((state) => state.searchQuery);
   const sortBy = useChannelStore((state) => state.sortBy);
   const statusMap = useChannelStore((state) => state.statusMap);
+
+  // Defer statusMap changes to avoid blocking UI during rapid updates
+  const deferredStatusMap = useDeferredValue(statusMap);
 
   const query = useQuery({
     queryKey: ["channels", enabledSources.map((s) => s.id)],
@@ -51,12 +57,13 @@ export function useChannels() {
     return filterChannels(query.data, searchQuery);
   }, [query.data, searchQuery]);
 
+  // Only use statusMap as dependency when sorting by status
   const sortedChannels = useMemo(() => {
     if (sortBy === "status") {
-      return sortChannelsByStatus(filteredChannels, statusMap);
+      return sortChannelsByStatus(filteredChannels, deferredStatusMap);
     }
     return sortChannelsByName(filteredChannels);
-  }, [filteredChannels, sortBy, statusMap]);
+  }, [filteredChannels, sortBy, deferredStatusMap]);
 
   const groupedChannels = useMemo(() => {
     return groupChannels(sortedChannels);
