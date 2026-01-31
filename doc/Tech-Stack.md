@@ -639,3 +639,89 @@ describe('StatusIndicator', () => {
   })
 })
 ```
+
+## 8. 性能优化指南
+
+### 8.1 图片组件选择
+
+**推荐使用 expo-image 替代 React Native Image：**
+
+```tsx
+// ❌ 避免
+import { Image } from "react-native";
+
+// ✅ 推荐
+import { Image } from "expo-image";
+
+<Image
+  source={{ uri: imageUrl }}
+  contentFit="contain"
+  transition={150}
+  cachePolicy="memory-disk"
+/>
+```
+
+**expo-image 优势：**
+- 内置内存和磁盘缓存
+- 支持 blurhash 占位符
+- 更高效的原生实现
+- 统一的跨平台 API
+
+### 8.2 组件 Memoization 指南
+
+**列表项组件必须使用 memo 包裹：**
+
+```tsx
+// ✅ 正确
+export const ListItem = memo(function ListItem({ item, onPress }: Props) {
+  const handlePress = useCallback(() => {
+    onPress(item);
+  }, [onPress, item]);
+
+  return <Pressable onPress={handlePress}>...</Pressable>;
+});
+```
+
+**常见错误：**
+
+```tsx
+// ❌ 内联函数导致 memo 失效
+<Pressable onPress={() => onPress(item)}>
+
+// ❌ 内联样式对象导致重渲染
+<View style={{ width: 100 }}>
+
+// ✅ 使用 useCallback
+const handlePress = useCallback(() => onPress(item), [onPress, item]);
+
+// ✅ 使用 useMemo 或 StyleSheet
+const style = useMemo(() => ({ width }), [width]);
+```
+
+### 8.3 动画性能最佳实践
+
+**只动画 transform 和 opacity：**
+
+```tsx
+// ✅ GPU 加速属性
+useAnimatedStyle(() => ({
+  transform: [{ translateX: x.value }, { scale: scale.value }],
+  opacity: opacity.value,
+}));
+
+// ❌ 避免动画这些属性（触发布局重计算）
+// width, height, margin, padding, top, left, right, bottom
+```
+
+### 8.4 列表性能检查清单
+
+开发列表组件时，确保：
+
+- [ ] 列表项使用 `memo()` 包裹
+- [ ] `renderItem` 使用 `useCallback`
+- [ ] `keyExtractor` 使用 `useCallback`
+- [ ] 无内联函数作为 props
+- [ ] 无内联样式对象（除非静态）
+- [ ] 配置 `removeClippedSubviews={true}`
+- [ ] 配置合理的 `windowSize` 和 `maxToRenderPerBatch`
+- [ ] 图片使用 `expo-image` 并配置缓存

@@ -26,6 +26,7 @@
     "expo-build-properties": "^1.0.10",
     "expo-constants": "~55.0.2",
     "expo-font": "~55.0.3",
+    "expo-image": "^3.0.11",
     "expo-linking": "~55.0.3",
     "expo-localization": "^17.0.8",
     "expo-router": "55.0.0-canary-20260128-67ce8d5",

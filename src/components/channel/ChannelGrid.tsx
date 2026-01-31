@@ -3,15 +3,15 @@ import { Text } from "@components/ui/text";
 import { useChannelStatusCheck } from "@hooks/useChannelStatus";
 import { useChannelStore } from "@stores/useChannelStore";
 import { Tv } from "@utils/icons";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FlatList,
-  Image,
   Pressable,
   useWindowDimensions,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 import { StatusIndicator } from "./StatusIndicator";
 
 interface ChannelGridItemProps {
@@ -42,10 +42,16 @@ const ChannelGridItem = memo(function ChannelGridItem({
 
   const statusLabel = t(statusTranslationKeys[status]);
 
+  const handlePress = useCallback(() => {
+    onPress(channel);
+  }, [onPress, channel]);
+
+  const containerStyle = useMemo(() => ({ width }), [width]);
+
   return (
     <Pressable
-      onPress={() => onPress(channel)}
-      style={{ width }}
+      onPress={handlePress}
+      style={containerStyle}
       className="p-2 active:opacity-90"
       accessibilityLabel={`${channel.name}, ${statusLabel}`}
       accessibilityRole="button"
@@ -58,7 +64,9 @@ const ChannelGridItem = memo(function ChannelGridItem({
             <Image
               source={{ uri: channel.logo }}
               className="h-14 w-14"
-              resizeMode="contain"
+              contentFit="contain"
+              transition={150}
+              cachePolicy="memory-disk"
               accessibilityIgnoresInvertColors
             />
           ) : (
@@ -92,6 +100,14 @@ export function ChannelGrid({ channels, onChannelPress }: ChannelGridProps) {
     verticalPadding = 8; // px-2 on container
   const itemWidth = (screenWidth - horizontalPadding * 2) / numColumns;
 
+  const contentContainerStyle = useMemo(
+    () => ({
+      paddingHorizontal: horizontalPadding,
+      paddingVertical: verticalPadding,
+    }),
+    []
+  );
+
   const renderItem = useCallback(
     ({ item }: { item: Channel }) => (
       <ChannelGridItem
@@ -114,10 +130,7 @@ export function ChannelGrid({ channels, onChannelPress }: ChannelGridProps) {
       removeClippedSubviews={true}
       maxToRenderPerBatch={12}
       windowSize={5}
-      contentContainerStyle={{
-        paddingHorizontal: horizontalPadding,
-        paddingVertical: verticalPadding,
-      }}
+      contentContainerStyle={contentContainerStyle}
     />
   );
 }

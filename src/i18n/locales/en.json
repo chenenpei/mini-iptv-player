@@ -44,7 +44,9 @@
     "groupCollapsed": "collapsed",
     "statusAvailable": "Available",
     "statusUnavailable": "Unavailable",
-    "statusUnknown": "Unknown"
+    "statusUnknown": "Unknown",
+    "expandHint": "Tap to expand group",
+    "collapseHint": "Tap to collapse group"
   },
   "favorites": {
     "title": "Favorites",

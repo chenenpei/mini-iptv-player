@@ -47,6 +47,9 @@ importers:
       expo-font:
         specifier: ~55.0.3
         version: 55.0.3(expo@55.0.0-preview.7)(react-native@0.83.1(@babel/core@7.28.6)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
+      expo-image:
+        specifier: ^3.0.11
+        version: 3.0.11(expo@55.0.0-preview.7)(react-native-web@0.21.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.1(@babel/core@7.28.6)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
       expo-linking:
         specifier: ~55.0.3
         version: 55.0.3(expo@55.0.0-preview.7)(react-native@0.83.1(@babel/core@7.28.6)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
@@ -1980,6 +1983,17 @@ packages:
       expo: '*'
       react: '*'
       react-native: '*'
+
+  expo-image@3.0.11:
+    resolution: {integrity: sha512-4TudfUCLgYgENv+f48omnU8tjS2S0Pd9EaON5/s1ZUBRwZ7K8acEr4NfvLPSaeXvxW24iLAiyQ7sV7BXQH3RoA==}
+    peerDependencies:
+      expo: '*'
+      react: '*'
+      react-native: '*'
+      react-native-web: '*'
+    peerDependenciesMeta:
+      react-native-web:
+        optional: true
 
   expo-image@55.0.4-canary-20260128-67ce8d5:
     resolution: {integrity: sha512-rXgd/C7wnjD2PQLiY1rBaF0oTKSiG8rXlegm2nHsp5QR7B5Ux0n7Kiz0CbkLoDlrV9/fcJkO8SMnMDrUX1SIbQ==}
@@ -5990,6 +6004,14 @@ snapshots:
       fontfaceobserver: 2.3.0
       react: 19.2.0
       react-native: 0.83.1(@babel/core@7.28.6)(@types/react@19.2.10)(react@19.2.0)
+
+  expo-image@3.0.11(expo@55.0.0-preview.7)(react-native-web@0.21.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.1(@babel/core@7.28.6)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0):
+    dependencies:
+      expo: 55.0.0-preview.7(@babel/core@7.28.6)(@expo/dom-webview@0.2.8)(@expo/metro-runtime@55.0.3)(expo-router@55.0.0-canary-20260128-67ce8d5)(react-dom@19.2.0(react@19.2.0))(react-native-web@0.21.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.1(@babel/core@7.28.6)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
+      react: 19.2.0
+      react-native: 0.83.1(@babel/core@7.28.6)(@types/react@19.2.10)(react@19.2.0)
+    optionalDependencies:
+      react-native-web: 0.21.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   expo-image@55.0.4-canary-20260128-67ce8d5(expo@55.0.0-preview.7)(react-native-web@0.21.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.1(@babel/core@7.28.6)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0):
     dependencies:

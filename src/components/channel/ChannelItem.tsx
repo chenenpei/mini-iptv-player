@@ -1,5 +1,6 @@
-import { memo } from "react";
-import { View, Pressable, Image } from "react-native";
+import { memo, useCallback } from "react";
+import { View, Pressable } from "react-native";
+import { Image } from "expo-image";
 import type { Channel, ChannelStatus } from "@/types/channel";
 import { Text } from "@components/ui/text";
 import { StatusIndicator } from "./StatusIndicator";
@@ -31,9 +32,13 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
 
   const statusLabel = t(statusTranslationKeys[status]);
 
+  const handlePress = useCallback(() => {
+    onPress(channel);
+  }, [onPress, channel]);
+
   return (
     <Pressable
-      onPress={() => onPress(channel)}
+      onPress={handlePress}
       className="flex-row items-center px-4 py-3 active:bg-muted/50"
       accessibilityLabel={`${channel.name}, ${statusLabel}`}
       accessibilityRole="button"
@@ -45,7 +50,9 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
           <Image
             source={{ uri: channel.logo }}
             className="h-10 w-10"
-            resizeMode="contain"
+            contentFit="contain"
+            transition={150}
+            cachePolicy="memory-disk"
             accessibilityIgnoresInvertColors
           />
         ) : (

@@ -44,7 +44,9 @@
     "groupCollapsed": "已折叠",
     "statusAvailable": "可用",
     "statusUnavailable": "不可用",
-    "statusUnknown": "未检测"
+    "statusUnknown": "未检测",
+    "expandHint": "点击展开分组",
+    "collapseHint": "点击折叠分组"
   },
   "favorites": {
     "title": "收藏",

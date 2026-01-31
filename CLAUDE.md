@@ -163,3 +163,14 @@ IPTV 源大多使用 HTTP 协议，需要配置允许明文流量：
 触摸目标最小 44x44px，使用 `min-h-11 min-w-11` 类名确保符合规范。
 
 详见 [UI-UX-Design.md](doc/UI-UX-Design.md) 8.4 节无障碍实现指南。
+
+### 性能优化快速参考
+
+**图片组件**：优先使用 `expo-image` 替代 React Native Image，支持更好的缓存和过渡效果。
+
+**性能检查清单**：
+- 列表项组件使用 `memo()` 包裹
+- 回调函数使用 `useCallback`，依赖数组正确
+- 动态样式对象使用 `useMemo`
+- 只动画 `transform` 和 `opacity` 属性
+- 详细指南见 [Tech-Stack.md](doc/Tech-Stack.md) 第 8 节
