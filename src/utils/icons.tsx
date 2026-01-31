@@ -1,4 +1,5 @@
 import { cssInterop } from "nativewind";
+import { Image as ExpoImage } from "expo-image";
 import {
   Home,
   Heart,
@@ -82,6 +83,11 @@ for (const Icon of icons) {
     },
   });
 }
+
+// Configure cssInterop for expo-image
+cssInterop(ExpoImage, {
+  className: "style",
+});
 
 export {
   Home,

@@ -3,7 +3,7 @@ import { Text } from "@components/ui/text";
 import { useChannelStatusCheck } from "@hooks/useChannelStatus";
 import { useChannelStore } from "@stores/useChannelStore";
 import { Tv } from "@utils/icons";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FlatList,
@@ -32,6 +32,8 @@ const ChannelGridItem = memo(function ChannelGridItem({
   width,
 }: ChannelGridItemProps) {
   const { t } = useTranslation();
+  const [imageError, setImageError] = useState(false);
+
   // Only subscribe to this channel's status, not the entire map
   const status = useChannelStore(
     (state) => state.statusMap[channel.id] ?? "unknown",
@@ -46,7 +48,12 @@ const ChannelGridItem = memo(function ChannelGridItem({
     onPress(channel);
   }, [onPress, channel]);
 
+  const handleImageError = useCallback(() => {
+    setImageError(true);
+  }, []);
+
   const containerStyle = useMemo(() => ({ width }), [width]);
+  const showLogo = channel.logo && !imageError;
 
   return (
     <Pressable
@@ -60,7 +67,7 @@ const ChannelGridItem = memo(function ChannelGridItem({
       <View className="bg-card rounded-xl p-3 items-center border border-border">
         {/* Logo */}
         <View className="h-16 w-16 rounded-xl bg-muted items-center justify-center overflow-hidden mb-2">
-          {channel.logo ? (
+          {showLogo ? (
             <Image
               source={{ uri: channel.logo }}
               className="h-14 w-14"
@@ -68,6 +75,7 @@ const ChannelGridItem = memo(function ChannelGridItem({
               transition={150}
               cachePolicy="memory-disk"
               accessibilityIgnoresInvertColors
+              onError={handleImageError}
             />
           ) : (
             <Tv size={32} className="text-muted-foreground" />
