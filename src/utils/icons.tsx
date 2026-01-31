@@ -8,6 +8,7 @@ import {
   Pause,
   Volume2,
   VolumeX,
+  Volume1,
   Maximize,
   Minimize,
   Cast,
@@ -29,6 +30,8 @@ import {
   LayoutGrid,
   Clock,
   ArrowLeft,
+  SkipBack,
+  SkipForward,
   type LucideIcon,
 } from "lucide-react-native";
 
@@ -42,6 +45,7 @@ const icons: LucideIcon[] = [
   Pause,
   Volume2,
   VolumeX,
+  Volume1,
   Maximize,
   Minimize,
   Cast,
@@ -63,6 +67,8 @@ const icons: LucideIcon[] = [
   LayoutGrid,
   Clock,
   ArrowLeft,
+  SkipBack,
+  SkipForward,
 ];
 
 for (const Icon of icons) {
@@ -86,6 +92,7 @@ export {
   Pause,
   Volume2,
   VolumeX,
+  Volume1,
   Maximize,
   Minimize,
   Cast,
@@ -107,4 +114,6 @@ export {
   LayoutGrid,
   Clock,
   ArrowLeft,
+  SkipBack,
+  SkipForward,
 };

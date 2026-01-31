@@ -11,6 +11,8 @@ export function usePlayer(channelId: string, channelUrl: string) {
     togglePlay,
     isMuted,
     toggleMute,
+    volume,
+    setVolume,
     isFullscreen,
     toggleFullscreen,
     setIsFullscreen,
@@ -85,6 +87,13 @@ export function usePlayer(channelId: string, channelUrl: string) {
     toggleMute();
   }, [toggleMute]);
 
+  const handleVolumeChange = useCallback(
+    (newVolume: number) => {
+      setVolume(newVolume);
+    },
+    [setVolume]
+  );
+
   const handleFullscreenToggle = useCallback(() => {
     toggleFullscreen();
   }, [toggleFullscreen]);
@@ -100,6 +109,7 @@ export function usePlayer(channelId: string, channelUrl: string) {
     status,
     isPlaying,
     isMuted,
+    volume,
     isFullscreen,
     isLoading,
     error,
@@ -113,6 +123,7 @@ export function usePlayer(channelId: string, channelUrl: string) {
     // Control handlers
     handlePlayPause,
     handleMuteToggle,
+    handleVolumeChange,
     handleFullscreenToggle,
     exitFullscreen,
   };

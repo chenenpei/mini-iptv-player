@@ -19,6 +19,9 @@ interface PlayerStoreState {
   setIsMuted: (muted: boolean) => void;
   toggleMute: () => void;
 
+  volume: number;
+  setVolume: (volume: number) => void;
+
   isFullscreen: boolean;
   setIsFullscreen: (fullscreen: boolean) => void;
   toggleFullscreen: () => void;
@@ -39,6 +42,7 @@ const initialState = {
   status: "idle" as PlayerStatus,
   isPlaying: false,
   isMuted: false,
+  volume: 1,
   isFullscreen: false,
   isLoading: false,
   error: null,
@@ -57,6 +61,8 @@ export const usePlayerStore = create<PlayerStoreState>((set) => ({
 
   setIsMuted: (muted) => set({ isMuted: muted }),
   toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
+
+  setVolume: (volume) => set({ volume: Math.max(0, Math.min(1, volume)) }),
 
   setIsFullscreen: (fullscreen) => set({ isFullscreen: fullscreen }),
   toggleFullscreen: () =>
