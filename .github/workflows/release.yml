@@ -50,10 +50,7 @@ jobs:
         run: pnpm install
 
       - name: Build Android APK
-        run: |
-          cd android
-          chmod +x ./gradlew
-          ./gradlew assembleRelease
+        run: npx expo run:android --variant release --no-install
 
       - name: Get version from tag
         id: get_version
