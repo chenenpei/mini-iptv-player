@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import { View, Pressable } from "react-native";
 import { Image } from "expo-image";
 import type { Channel, ChannelStatus } from "@/types/channel";
@@ -22,6 +22,8 @@ const statusTranslationKeys: Record<ChannelStatus, string> = {
 
 export const ChannelItem = memo(function ChannelItem({ channel, onPress }: ChannelItemProps) {
   const { t } = useTranslation();
+  const [imageError, setImageError] = useState(false);
+
   // Only subscribe to this channel's status, not the entire map
   const status = useChannelStore(
     (state) => state.statusMap[channel.id] ?? "unknown"
@@ -36,6 +38,12 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
     onPress(channel);
   }, [onPress, channel]);
 
+  const handleImageError = useCallback(() => {
+    setImageError(true);
+  }, []);
+
+  const showLogo = channel.logo && !imageError;
+
   return (
     <Pressable
       onPress={handlePress}
@@ -46,7 +54,7 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
     >
       {/* Logo */}
       <View className="h-12 w-12 rounded-xl bg-muted items-center justify-center overflow-hidden">
-        {channel.logo ? (
+        {showLogo ? (
           <Image
             source={{ uri: channel.logo }}
             className="h-10 w-10"
@@ -54,6 +62,7 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
             transition={150}
             cachePolicy="memory-disk"
             accessibilityIgnoresInvertColors
+            onError={handleImageError}
           />
         ) : (
           <Tv size={24} className="text-muted-foreground" />
