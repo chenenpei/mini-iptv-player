@@ -8,7 +8,7 @@ import { useChannelById, useChannelsForPlayer } from "@hooks/useChannels";
 import { usePlayer } from "@hooks/usePlayer";
 import { useHistoryStore } from "@stores/useHistoryStore";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Tv } from "@utils/icons";
+import { Tv } from "@utils/icons";
 import type { Channel } from "@/types/channel";
 import { StatusBar } from "expo-status-bar";
 
@@ -175,10 +175,6 @@ export default function PlayerScreen() {
     }
   }, [hasNext, channels, currentIndex]);
 
-  const handleGoBack = useCallback(() => {
-    router.back();
-  }, [router]);
-
   // Header title
   const headerTitle = useMemo(
     () => channel?.name || t("player.noChannel"),
@@ -193,16 +189,6 @@ export default function PlayerScreen() {
           options={{
             headerShown: true,
             title: t("player.noChannel"),
-            headerLeft: () => (
-              <Pressable
-                onPress={handleGoBack}
-                className="p-2 -ml-2 min-h-11 min-w-11 items-center justify-center"
-                accessibilityLabel={t("player.goBack")}
-                accessibilityRole="button"
-              >
-                <ArrowLeft size={24} className="text-foreground" />
-              </Pressable>
-            ),
           }}
         />
         <ChannelNotFound />
@@ -250,16 +236,6 @@ export default function PlayerScreen() {
         options={{
           headerShown: true,
           title: headerTitle,
-          headerLeft: () => (
-            <Pressable
-              onPress={handleGoBack}
-              className="p-2 -ml-2 min-h-11 min-w-11 items-center justify-center"
-              accessibilityLabel={t("player.goBack")}
-              accessibilityRole="button"
-            >
-              <ArrowLeft size={24} className="text-foreground" />
-            </Pressable>
-          ),
         }}
       />
       <View className="flex-1 bg-background">

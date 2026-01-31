@@ -3,7 +3,6 @@ import { View, ScrollView, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft } from "@/utils/icons";
 import { useSourceStore } from "@/stores/useSourceStore";
 import { useTranslation } from "react-i18next";
 import { useRouter, Stack } from "expo-router";
@@ -42,10 +41,6 @@ export default function AddSourceScreen() {
     return isValid;
   }, [name, url, t]);
 
-  const handleCancel = useCallback(() => {
-    router.back();
-  }, [router]);
-
   const handleSave = useCallback(() => {
     if (!validateForm()) return;
 
@@ -63,17 +58,6 @@ export default function AddSourceScreen() {
     <>
       <Stack.Screen
         options={{
-          headerBackVisible: false,
-          headerLeft: () => (
-            <Pressable
-              onPress={handleCancel}
-              className="min-h-11 min-w-11 items-center justify-center active:opacity-70 -ml-2"
-              accessibilityLabel={t("common.back")}
-              accessibilityRole="button"
-            >
-              <ArrowLeft size={24} className="text-foreground" />
-            </Pressable>
-          ),
           headerRight: () => (
             <Pressable
               onPress={handleSave}

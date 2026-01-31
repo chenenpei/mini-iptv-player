@@ -13,7 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Trash2 } from "@/utils/icons";
+import { Trash2 } from "@/utils/icons";
 import { useSourceStore } from "@/stores/useSourceStore";
 import { useTranslation } from "react-i18next";
 import { useRouter, useLocalSearchParams, Stack } from "expo-router";
@@ -65,10 +65,6 @@ export default function EditSourceScreen() {
     return isValid;
   }, [name, url, t]);
 
-  const handleCancel = useCallback(() => {
-    router.back();
-  }, [router]);
-
   const handleSave = useCallback(() => {
     if (!validateForm() || !sourceId) return;
 
@@ -105,17 +101,6 @@ export default function EditSourceScreen() {
     <>
       <Stack.Screen
         options={{
-          headerBackVisible: false,
-          headerLeft: () => (
-            <Pressable
-              onPress={handleCancel}
-              className="min-h-11 min-w-11 items-center justify-center active:opacity-70 -ml-2"
-              accessibilityLabel={t("common.back")}
-              accessibilityRole="button"
-            >
-              <ArrowLeft size={24} className="text-foreground" />
-            </Pressable>
-          ),
           headerRight: () => (
             <Pressable
               onPress={handleSave}
