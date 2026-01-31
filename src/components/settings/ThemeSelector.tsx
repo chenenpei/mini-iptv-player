@@ -6,46 +6,37 @@ import {
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
-import { Sun, Moon, Monitor, Check } from "@/utils/icons";
 import { useSettingsStore, type ThemeMode } from "@/stores/useSettingsStore";
 import { useTranslation } from "react-i18next";
 
-interface ThemeOptionProps {
-  mode: ThemeMode;
-  icon: React.ReactNode;
+interface RadioOptionProps {
   label: string;
   isSelected: boolean;
-  onPress: (mode: ThemeMode) => void;
-  isLast?: boolean;
+  onPress: () => void;
 }
 
-const ThemeOption = memo(function ThemeOption({
-  mode,
-  icon,
+const RadioOption = memo(function RadioOption({
   label,
   isSelected,
   onPress,
-  isLast = false,
-}: ThemeOptionProps) {
-  const handlePress = useCallback(() => {
-    onPress(mode);
-  }, [mode, onPress]);
-
+}: RadioOptionProps) {
   return (
     <Pressable
-      onPress={handlePress}
-      className={`flex-row items-center px-4 py-3 min-h-12 active:bg-muted/50 ${
-        !isLast ? "border-b border-border" : ""
-      }`}
+      onPress={onPress}
+      className="flex-row items-center py-3 active:bg-muted/30"
       accessibilityLabel={label}
       accessibilityRole="radio"
       accessibilityState={{ selected: isSelected }}
     >
-      <View className="mr-3">{icon}</View>
-      <Text className="flex-1 text-base text-foreground">{label}</Text>
-      {isSelected && <Check size={20} className="text-primary" />}
+      <View
+        className={`w-5 h-5 rounded-full border-2 items-center justify-center mr-4 ${
+          isSelected ? "border-primary" : "border-muted-foreground"
+        }`}
+      >
+        {isSelected && <View className="w-2.5 h-2.5 rounded-full bg-primary" />}
+      </View>
+      <Text className="text-base text-foreground">{label}</Text>
     </Pressable>
   );
 });
@@ -71,52 +62,50 @@ export const ThemeSelectorDialog = memo(function ThemeSelectorDialog({
     [setThemeMode, onOpenChange]
   );
 
+  const handleCancel = useCallback(() => {
+    onOpenChange(false);
+  }, [onOpenChange]);
+
   const options = useMemo(
     () => [
-      {
-        mode: "system" as ThemeMode,
-        icon: <Monitor size={20} className="text-muted-foreground" />,
-        label: t("settings.themeSystem"),
-      },
-      {
-        mode: "light" as ThemeMode,
-        icon: <Sun size={20} className="text-muted-foreground" />,
-        label: t("settings.themeLight"),
-      },
-      {
-        mode: "dark" as ThemeMode,
-        icon: <Moon size={20} className="text-muted-foreground" />,
-        label: t("settings.themeDark"),
-      },
+      { mode: "system" as ThemeMode, label: t("settings.themeSystem") },
+      { mode: "light" as ThemeMode, label: t("settings.themeLight") },
+      { mode: "dark" as ThemeMode, label: t("settings.themeDark") },
     ],
     [t]
   );
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="p-0 max-w-xs">
-        <AlertDialogHeader className="px-4 pt-4 pb-2">
-          <AlertDialogTitle className="text-center">
+      <AlertDialogContent className="w-80 p-0">
+        <AlertDialogHeader className="px-6 pt-6 pb-2">
+          <AlertDialogTitle className="text-left text-lg">
             {t("settings.theme")}
           </AlertDialogTitle>
         </AlertDialogHeader>
-        <View>
-          {options.map((option, index) => (
-            <ThemeOption
+
+        <View className="px-6">
+          {options.map((option) => (
+            <RadioOption
               key={option.mode}
-              mode={option.mode}
-              icon={option.icon}
               label={option.label}
               isSelected={themeMode === option.mode}
-              onPress={handleSelect}
-              isLast={index === options.length - 1}
+              onPress={() => handleSelect(option.mode)}
             />
           ))}
         </View>
-        <View className="p-4 pt-2">
-          <AlertDialogCancel>
-            <Text>{t("common.cancel")}</Text>
-          </AlertDialogCancel>
+
+        <View className="flex-row justify-end px-4 py-4">
+          <Pressable
+            onPress={handleCancel}
+            className="px-4 py-2 active:opacity-70"
+            accessibilityLabel={t("common.cancel")}
+            accessibilityRole="button"
+          >
+            <Text className="text-primary font-medium uppercase">
+              {t("common.cancel")}
+            </Text>
+          </Pressable>
         </View>
       </AlertDialogContent>
     </AlertDialog>
