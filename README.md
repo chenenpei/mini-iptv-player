@@ -43,7 +43,7 @@ A lightweight cross-platform IPTV player for iOS and Android.
 
 ```bash
 # 克隆仓库
-git clone https://github.com/your-username/mini-iptv-player.git
+git clone https://github.com/chenenpei/mini-iptv-player.git
 cd mini-iptv-player
 
 # 安装依赖
