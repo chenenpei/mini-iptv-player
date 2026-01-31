@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Critical Rules
+
+### MUST DO
+- 开发前查阅 `doc/` 目录下的相关文档
+- 完成任务后更新 `doc/MILESTONE.md`
+- 常规开发：完成一个任务即提交一个 commit
+- 使用已有的 skills 处理任务（见 Claude Code 工作方式）
+- 拆分任务并使用 sub-agents 并发处理
+
+### MUST NOT
+- **修 Bug 后不要主动提交 commit** - 等用户验证通过后再提交
+- 不要一次性提交大量改动 - 按任务拆分 commit
+- 不要跳过文档查阅直接开发
+
 ## Project Overview
 
 mini-iptv-player - 一个轻量级的跨平台 IPTV 播放器应用，支持 iOS 和 Android。
@@ -19,24 +33,32 @@ mini-iptv-player - 一个轻量级的跨平台 IPTV 播放器应用，支持 iOS
 
 ## Development Workflow
 
-开发流程遵循以下原则：
+1. **开发前**：查阅 PRD、UI-UX、Tech-Stack 文档
+2. **开发中**：遵循 Tech-Stack.md 代码规范
+3. **完成后**：更新 MILESTONE.md，同步文档差异
 
-1. **开发前**：查阅相关文档（PRD 了解需求、UI-UX 了解设计、Tech-Stack 了解规范）
-2. **开发中**：遵循 Tech-Stack.md 中的代码规范和目录结构
-3. **阶段完成后**：
-   - 更新 MILESTONE.md 中的任务状态和变更日志
-   - 总结开发要点，检查是否需要更新其他文档
-   - 如发现文档与实际实现有差异，及时同步更新
+## Claude Code 工作方式
+
+### Skill 优先
+
+规划和执行任务时，优先检查并使用已有的 skills：
+- `vercel-react-native-skills` - React Native/Expo 最佳实践
+- `ui-ux-pro-max` - UI/UX 设计规范、配色、字体
+- `expo-app-design:*` - Expo 原生 UI、数据获取等
+- `feature-dev:feature-dev` - 引导式功能开发
+
+### 任务并发
+
+拆分独立任务，使用 sub-agents 并发处理：
+- 将复杂任务分解为可并行的子任务
+- 无依赖关系的任务同时启动多个 agents
+- 有依赖关系的任务按顺序执行
 
 ## Git Commit 规范
 
-| 场景 | 何时提交 | 说明 |
-|------|----------|------|
-| **常规开发** | 完成一个任务即可提交 | 记录进度、方便回滚 |
-| **Milestone 完成** | 提交后等待用户测试审核 | 通过后才进入下一阶段 |
-| **修 Bug** | 用户验证通过后才提交 | commit 代表交付确认 |
-
-**重要**：修 Bug 时，完成修改后**不要**主动提交 commit，需等待用户验证通过后再提交。
+- 常规开发：一个任务一个 commit
+- Milestone 完成：提交后等待用户测试审核
+- 修 Bug：**用户验证通过后**才提交（见 Critical Rules）
 
 ## Tech Stack
 
