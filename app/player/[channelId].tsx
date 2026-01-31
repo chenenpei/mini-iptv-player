@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState, useEffect, useRef } from "react";
 import { View, Pressable, FlatList, BackHandler } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Text } from "@components/ui/text";
@@ -6,10 +6,10 @@ import { VideoPlayer } from "@components/player";
 import { ChannelItem } from "@components/channel/ChannelItem";
 import { useChannelById, useChannels } from "@hooks/useChannels";
 import { usePlayer } from "@hooks/usePlayer";
+import { useHistoryStore } from "@stores/useHistoryStore";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Tv } from "@utils/icons";
 import type { Channel } from "@/types/channel";
-import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 
 // Channel not found state
@@ -85,6 +85,10 @@ export default function PlayerScreen() {
   const [currentChannelId, setCurrentChannelId] = useState(initialChannelId || "");
   const channel = useChannelById(currentChannelId);
 
+  // History tracking
+  const addHistory = useHistoryStore((state) => state.addHistory);
+  const historyRecordedRef = useRef<string | null>(null);
+
   const {
     isPlaying,
     isMuted,
@@ -126,6 +130,14 @@ export default function PlayerScreen() {
 
     return () => backHandler.remove();
   }, [isFullscreen, exitFullscreen]);
+
+  // Record history when channel is played
+  useEffect(() => {
+    if (channel && historyRecordedRef.current !== channel.id) {
+      addHistory(channel);
+      historyRecordedRef.current = channel.id;
+    }
+  }, [channel, addHistory]);
 
   const handleChannelPress = useCallback(
     (newChannel: Channel) => {
