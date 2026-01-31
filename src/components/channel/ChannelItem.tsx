@@ -4,8 +4,9 @@ import { Image } from "expo-image";
 import type { Channel, ChannelStatus } from "@/types/channel";
 import { Text } from "@components/ui/text";
 import { StatusIndicator } from "./StatusIndicator";
-import { Tv } from "@utils/icons";
+import { Tv, Star } from "@utils/icons";
 import { useChannelStore } from "@stores/useChannelStore";
+import { useFavoriteStore } from "@stores/useFavoriteStore";
 import { useChannelStatusCheck } from "@hooks/useChannelStatus";
 import { useTranslation } from "react-i18next";
 
@@ -29,14 +30,27 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
     (state) => state.statusMap[channel.id] ?? "unknown"
   ) as ChannelStatus;
 
+  // Favorite state
+  const isFavorite = useFavoriteStore(
+    (state) => state.favorites.some((c) => c.id === channel.id)
+  );
+  const toggleFavorite = useFavoriteStore((state) => state.toggleFavorite);
+
   // Check status with rate-limited queue
   useChannelStatusCheck(channel);
 
   const statusLabel = t(statusTranslationKeys[status]);
+  const favoriteLabel = isFavorite
+    ? t("channel.removeFavorite")
+    : t("channel.addFavorite");
 
   const handlePress = useCallback(() => {
     onPress(channel);
   }, [onPress, channel]);
+
+  const handleFavoritePress = useCallback(() => {
+    toggleFavorite(channel);
+  }, [toggleFavorite, channel]);
 
   const handleImageError = useCallback(() => {
     setImageError(true);
@@ -80,6 +94,21 @@ export const ChannelItem = memo(function ChannelItem({ channel, onPress }: Chann
           </Text>
         )}
       </View>
+
+      {/* Favorite Button */}
+      <Pressable
+        onPress={handleFavoritePress}
+        className="p-2 min-h-11 min-w-11 items-center justify-center active:opacity-70"
+        accessibilityLabel={favoriteLabel}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isFavorite }}
+      >
+        {isFavorite ? (
+          <Star size={20} fill="#eab308" className="text-yellow-500" />
+        ) : (
+          <Star size={20} className="text-muted-foreground" />
+        )}
+      </Pressable>
 
       {/* Status Indicator */}
       <StatusIndicator status={status} />

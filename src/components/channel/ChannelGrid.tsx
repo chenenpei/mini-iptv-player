@@ -2,7 +2,8 @@ import type { Channel, ChannelStatus } from "@/types/channel";
 import { Text } from "@components/ui/text";
 import { useChannelStatusCheck } from "@hooks/useChannelStatus";
 import { useChannelStore } from "@stores/useChannelStore";
-import { Tv } from "@utils/icons";
+import { useFavoriteStore } from "@stores/useFavoriteStore";
+import { Tv, Star } from "@utils/icons";
 import { memo, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -39,14 +40,27 @@ const ChannelGridItem = memo(function ChannelGridItem({
     (state) => state.statusMap[channel.id] ?? "unknown",
   ) as ChannelStatus;
 
+  // Favorite state
+  const isFavorite = useFavoriteStore(
+    (state) => state.favorites.some((c) => c.id === channel.id)
+  );
+  const toggleFavorite = useFavoriteStore((state) => state.toggleFavorite);
+
   // Check status with rate-limited queue
   useChannelStatusCheck(channel);
 
   const statusLabel = t(statusTranslationKeys[status]);
+  const favoriteLabel = isFavorite
+    ? t("channel.removeFavorite")
+    : t("channel.addFavorite");
 
   const handlePress = useCallback(() => {
     onPress(channel);
   }, [onPress, channel]);
+
+  const handleFavoritePress = useCallback(() => {
+    toggleFavorite(channel);
+  }, [toggleFavorite, channel]);
 
   const handleImageError = useCallback(() => {
     setImageError(true);
@@ -64,7 +78,22 @@ const ChannelGridItem = memo(function ChannelGridItem({
       accessibilityRole="button"
       accessibilityHint={t("channel.playHint")}
     >
-      <View className="bg-card rounded-xl p-3 items-center border border-border">
+      <View className="bg-card rounded-xl p-3 items-center border border-border relative">
+        {/* Favorite Button */}
+        <Pressable
+          onPress={handleFavoritePress}
+          className="absolute top-1 right-1 p-1.5 min-h-8 min-w-8 items-center justify-center active:opacity-70 z-10"
+          accessibilityLabel={favoriteLabel}
+          accessibilityRole="button"
+          accessibilityState={{ selected: isFavorite }}
+        >
+          {isFavorite ? (
+            <Star size={16} fill="#eab308" className="text-yellow-500" />
+          ) : (
+            <Star size={16} className="text-muted-foreground" />
+          )}
+        </Pressable>
+
         {/* Logo */}
         <View className="h-16 w-16 rounded-xl bg-muted items-center justify-center overflow-hidden mb-2">
           {showLogo ? (
