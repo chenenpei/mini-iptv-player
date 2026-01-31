@@ -1,5 +1,5 @@
-import { memo, useCallback, useRef, useMemo } from "react";
-import { View, StyleSheet } from "react-native";
+import { memo, useCallback, useRef, useMemo, useState, useEffect } from "react";
+import { View, StyleSheet, Pressable } from "react-native";
 import Video, {
   type VideoRef,
   type OnLoadData,
@@ -9,20 +9,29 @@ import Video, {
 import { LoadingOverlay } from "./LoadingOverlay";
 import { ErrorOverlay } from "./ErrorOverlay";
 import { ControlBar } from "./ControlBar";
+import { useTranslation } from "react-i18next";
+
+const CONTROLS_HIDE_DELAY = 4000; // 4 seconds
 
 interface VideoPlayerProps {
   url: string;
   isPlaying: boolean;
   isMuted: boolean;
+  volume: number;
   isFullscreen: boolean;
   isLoading: boolean;
   error: string | null;
+  hasPrevious: boolean;
+  hasNext: boolean;
   onLoad: () => void;
   onBuffer: (buffering: boolean) => void;
   onError: (error: string) => void;
   onPlayPause: () => void;
   onMuteToggle: () => void;
+  onVolumeChange: (volume: number) => void;
   onFullscreenToggle: () => void;
+  onPrevious: () => void;
+  onNext: () => void;
   onRetry: () => void;
 }
 
@@ -30,18 +39,61 @@ export const VideoPlayer = memo(function VideoPlayer({
   url,
   isPlaying,
   isMuted,
+  volume,
   isFullscreen,
   isLoading,
   error,
+  hasPrevious,
+  hasNext,
   onLoad,
   onBuffer,
   onError,
   onPlayPause,
   onMuteToggle,
+  onVolumeChange,
   onFullscreenToggle,
+  onPrevious,
+  onNext,
   onRetry,
 }: VideoPlayerProps) {
+  const { t } = useTranslation();
   const videoRef = useRef<VideoRef>(null);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [controlsVisible, setControlsVisible] = useState(true);
+
+  // Clear timer on unmount
+  useEffect(() => {
+    return () => {
+      if (hideTimerRef.current) {
+        clearTimeout(hideTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Start/reset auto-hide timer when controls become visible or playing state changes
+  useEffect(() => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+
+    // Only auto-hide when playing and controls are visible
+    if (controlsVisible && isPlaying) {
+      hideTimerRef.current = setTimeout(() => {
+        setControlsVisible(false);
+      }, CONTROLS_HIDE_DELAY);
+    }
+
+    return () => {
+      if (hideTimerRef.current) {
+        clearTimeout(hideTimerRef.current);
+      }
+    };
+  }, [controlsVisible, isPlaying]);
+
+  const handleVideoPress = useCallback(() => {
+    setControlsVisible((prev) => !prev);
+  }, []);
 
   const handleLoad = useCallback(
     (_data: OnLoadData) => {
@@ -65,17 +117,71 @@ export const VideoPlayer = memo(function VideoPlayer({
     [onError]
   );
 
+  // Reset timer when user interacts with controls
+  const handleControlInteraction = useCallback(() => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+    }
+    if (isPlaying) {
+      hideTimerRef.current = setTimeout(() => {
+        setControlsVisible(false);
+      }, CONTROLS_HIDE_DELAY);
+    }
+  }, [isPlaying]);
+
+  // Wrap control handlers to reset timer
+  const handlePlayPauseWithTimer = useCallback(() => {
+    handleControlInteraction();
+    onPlayPause();
+  }, [handleControlInteraction, onPlayPause]);
+
+  const handleMuteToggleWithTimer = useCallback(() => {
+    handleControlInteraction();
+    onMuteToggle();
+  }, [handleControlInteraction, onMuteToggle]);
+
+  const handleVolumeChangeWithTimer = useCallback(
+    (newVolume: number) => {
+      handleControlInteraction();
+      onVolumeChange(newVolume);
+    },
+    [handleControlInteraction, onVolumeChange]
+  );
+
+  const handleFullscreenToggleWithTimer = useCallback(() => {
+    handleControlInteraction();
+    onFullscreenToggle();
+  }, [handleControlInteraction, onFullscreenToggle]);
+
+  const handlePreviousWithTimer = useCallback(() => {
+    handleControlInteraction();
+    onPrevious();
+  }, [handleControlInteraction, onPrevious]);
+
+  const handleNextWithTimer = useCallback(() => {
+    handleControlInteraction();
+    onNext();
+  }, [handleControlInteraction, onNext]);
+
   const containerStyle = useMemo(
     () => [styles.container, isFullscreen && styles.fullscreen],
     [isFullscreen]
   );
 
   const hasError = error !== null;
+  const showControls = controlsVisible && !hasError;
 
   return (
     <View style={containerStyle}>
-      {/* Video */}
-      <View className="flex-1 bg-black">
+      {/* Video with touch handler */}
+      <Pressable
+        className="flex-1 bg-black"
+        onPress={handleVideoPress}
+        accessibilityLabel={
+          controlsVisible ? t("player.hideControls") : t("player.showControls")
+        }
+        accessibilityRole="button"
+      >
         {!hasError && url && (
           <Video
             ref={videoRef}
@@ -83,6 +189,7 @@ export const VideoPlayer = memo(function VideoPlayer({
             style={styles.video}
             paused={!isPlaying}
             muted={isMuted}
+            volume={volume}
             resizeMode="contain"
             onLoad={handleLoad}
             onBuffer={handleBuffer}
@@ -98,17 +205,23 @@ export const VideoPlayer = memo(function VideoPlayer({
 
         {/* Error Overlay */}
         <ErrorOverlay visible={hasError} message={error} onRetry={onRetry} />
-      </View>
+      </Pressable>
 
       {/* Control Bar */}
       <ControlBar
         isPlaying={isPlaying}
         isMuted={isMuted}
+        volume={volume}
         isFullscreen={isFullscreen}
-        onPlayPause={onPlayPause}
-        onMuteToggle={onMuteToggle}
-        onFullscreenToggle={onFullscreenToggle}
-        visible={!hasError}
+        hasPrevious={hasPrevious}
+        hasNext={hasNext}
+        onPlayPause={handlePlayPauseWithTimer}
+        onMuteToggle={handleMuteToggleWithTimer}
+        onVolumeChange={handleVolumeChangeWithTimer}
+        onFullscreenToggle={handleFullscreenToggleWithTimer}
+        onPrevious={handlePreviousWithTimer}
+        onNext={handleNextWithTimer}
+        visible={showControls}
       />
     </View>
   );
